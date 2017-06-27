@@ -589,7 +589,19 @@ class MDJM_Event {
 	 */
 	public function get_setup_time() {
 		$setup_time = get_post_meta( $this->ID, '_mdjm_event_djsetup_time', true );
-		
+
+		if ( ! $setup_time )	{
+			$start = $this->get_start_time();
+			if ( ! $start )	{
+				$start = mdjm_get_option( 'event_start_default', false );
+			}
+
+			if ( $start )	{
+				$setup_time = date( mdjm_get_option( 'time_format', 'H:i' ), strtotime( '-' . mdjm_get_option( 'event_setup_default' ) . ' minutes', strtotime( $start ) ) );
+			}
+
+		}
+
 		return apply_filters( 'mdjm_event_setup_time', $setup_time, $this->ID );
 	} // get_setup_time
 

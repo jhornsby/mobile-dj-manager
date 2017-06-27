@@ -405,6 +405,31 @@ function mdjm_get_registered_settings()	{
 						'type'        => 'checkbox',
 						'std'         => '1'
 					),
+					'event_start_default' => array(
+						'id'          => 'event_start_default',
+						'name'        => __( 'Default Start Time', 'mobile-dj-manager' ),
+						'desc'        => sprintf( __( 'Select a default start time for %s', 'mobile-dj-manaer' ), mdjm_get_label_plural( true ) ),
+						'type'        => 'select',
+						'options'     => mdjm_time_callback_options(),
+						'std'         => '19:00'
+					),
+					'event_finish_default' => array(
+						'id'          => 'event_finish_default',
+						'name'        => __( 'Default Finish Time', 'mobile-dj-manager' ),
+						'desc'        => sprintf( __( 'Select a default finish time for %s', 'mobile-dj-manaer' ), mdjm_get_label_plural( true ) ),
+						'type'        => 'select',
+						'options'     => mdjm_time_callback_options(),
+						'std'         => '23:00'
+					),
+					'event_setup_default' => array(
+						'id'          => 'event_setup_default',
+						'name'        => __( 'Default Setup Time', 'mobile-dj-manager' ),
+						'desc'        => sprintf( __( 'Select the number of minutes before an %s start time that setup should occur', 'mobile-dj-manaer' ), mdjm_get_label_singular( true ) ),
+						'type'        => 'number',
+						'size'        => 'small',
+						'step'        => '10',
+						'std'         => '60'
+					),
 					'events_order_by'  => array(
 						'id'          => 'events_order_by',
 						'name'        => __( 'Default Order By', 'mobile-dj-manager' ),
@@ -1935,6 +1960,33 @@ function mdjm_multiple_select_callback( $args ) {
 } // mdjm_multiple_select_callback
 
 /**
+ * Time Field Callback
+ *
+ * Retrieve time field options.
+ *
+ * @since	1.4.8
+ * @return	array
+ */
+function mdjm_time_callback_options()	{
+	$format  = mdjm_get_option( 'time_format', 'H:i' );
+
+	$start   = 'H:i' == mdjm_get_option( 'time_format' ) ? '00' : '1';
+	$end     = 'H:i' == mdjm_get_option( 'time_format' ) ? '23' : '11';
+	$minutes = array( '00', '15', '30', '45' );
+	$options = array();
+
+	while( $start <= $end )	{
+		foreach( $minutes as $minute )	{
+			$current = date( $format, strtotime( $start . ':' . $minute . ':00' ) );
+			$options[ $current ] = $current;
+		}
+		$start++;
+	}
+
+	return $options;
+} // mdjm_time_callback_options
+
+/**
  * Color select Callback
  *
  * Renders color select fields.
@@ -2275,170 +2327,6 @@ if ( ! function_exists( 'mdjm_license_key_callback' ) ) {
 	}
 
 } // mdjm_license_key_callback
-
-/**
- * Registers the license field callback for Software Licensing
- *
- * @since 1.5
- * @param array $args Arguments passed by the setting
- * @global $mdjm_options Array of all the MDJM options
- * @return void
- */
-/*if ( ! function_exists( 'mdjm_license_key_callback' ) ) {
-	function mdjm_license_key_callback( $args ) {
-		global $mdjm_options;
-
-		$messages = array();
-		$license  = get_option( $args['options']['is_valid_license_option'] );
-
-		if ( isset( $mdjm_options[ $args['id'] ] ) ) {
-			$value = $mdjm_options[ $args['id'] ];
-		} else {
-			$value = isset( $args['std'] ) ? $args['std'] : '';
-		}
-
-		if( ! empty( $license ) && is_object( $license ) ) {
-
-			// activate_license 'invalid' on anything other than valid, so if there was an error capture it
-			if ( false === $license->success ) {
-
-				switch( $license->error ) {
-
-					case 'expired' :
-
-						$class = 'error';
-						$messages[] = sprintf(
-							__( 'Your license key expired on %s. Please <a href="%s" target="_blank" title="Renew your license key">renew your license key</a>.', 'mobile-dj-manager' ),
-							date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ),
-							'http://mdjm.co.uk/checkout/?edd_license_key=' . $value . '&utm_campaign=admin&utm_source=licenses&utm_medium=expired'
-						);
-
-						$license_status = 'license-' . $class . '-notice';
-
-						break;
-
-					case 'missing' :
-
-						$class = 'error';
-						$messages[] = sprintf(
-							__( 'Invalid license. Please <a href="%s" target="_blank" title="Visit account page">visit your account page</a> and verify it.', 'mobile-dj-manager' ),
-							'http://mdjm.co.uk/your-account?utm_campaign=admin&utm_source=licenses&utm_medium=missing'
-						);
-
-						$license_status = 'license-' . $class . '-notice';
-
-						break;
-
-					case 'invalid' :
-					case 'site_inactive' :
-
-						$class = 'error';
-						$messages[] = sprintf(
-							__( 'Your %s is not active for this URL. Please <a href="%s" target="_blank" title="Visit account page">visit your account page</a> to manage your license key URLs.', 'mobile-dj-manager' ),
-							$args['name'],
-							'http://mdjm.co.uk/your-account?utm_campaign=admin&utm_source=licenses&utm_medium=invalid'
-						);
-
-						$license_status = 'license-' . $class . '-notice';
-
-						break;
-
-					case 'item_name_mismatch' :
-
-						$class = 'error';
-						$messages[] = sprintf( __( 'This is not a %s.', 'mobile-dj-manager' ), $args['name'] );
-
-						$license_status = 'license-' . $class . '-notice';
-
-						break;
-
-					case 'no_activations_left':
-
-						$class = 'error';
-						$messages[] = sprintf( __( 'Your license key has reached its activation limit. <a href="%s">View possible upgrades</a> now.', 'mobile-dj-manager' ), 'http://mdjm.co.uk/your-account/' );
-
-						$license_status = 'license-' . $class . '-notice';
-
-						break;
-
-				}
-
-			} else {
-
-				switch( $license->license ) {
-
-					case 'valid' :
-					default:
-
-						$class = 'valid';
-
-						$now        = current_time( 'timestamp' );
-						$expiration = strtotime( $license->expires, current_time( 'timestamp' ) );
-
-						if( 'lifetime' === $license->expires ) {
-
-							$messages[] = __( 'License key never expires.', 'mobile-dj-manager' );
-
-							$license_status = 'license-lifetime-notice';
-
-						} elseif( $expiration > $now && $expiration - $now < ( DAY_IN_SECONDS * 30 ) ) {
-
-							$messages[] = sprintf(
-								__( 'Your license key expires soon! It expires on %s. <a href="%s" target="_blank" title="Renew license">Renew your license key</a>.', 'mobile-dj-manager' ),
-								date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) ),
-								'http://mdjm.co.uk/checkout/?edd_license_key=' . $value . '&utm_campaign=admin&utm_source=licenses&utm_medium=renew'
-							);
-
-							$license_status = 'license-expires-soon-notice';
-
-						} else {
-
-							$messages[] = sprintf(
-								__( 'Your license key expires on %s.', 'mobile-dj-manager' ),
-								date_i18n( get_option( 'date_format' ), strtotime( $license->expires, current_time( 'timestamp' ) ) )
-							);
-
-							$license_status = 'license-expiration-date-notice';
-
-						}
-
-						break;
-
-				}
-
-			}
-
-		} else {
-			$license_status = null;
-		}
-
-		$size = ( isset( $args['size'] ) && ! is_null( $args['size'] ) ) ? $args['size'] : 'regular';
-		$html = '<input type="text" class="' . $size . '-text" id="mdjm_settings[' . $args['id'] . ']" name="mdjm_settings[' . $args['id'] . ']" value="' . esc_attr( $value ) . '"/>';
-
-		if ( ( is_object( $license ) && 'valid' == $license->license ) || 'valid' == $license ) {
-			$html .= '<input type="submit" class="button-secondary" name="' . $args['id'] . '_deactivate" value="' . __( 'Deactivate License',  'mobile-dj-manager' ) . '"/>';
-		}
-		$html .= '<label for="mdjm_settings[' . $args['id'] . ']">'  . $args['desc'] . '</label>';
-
-		if ( ! empty( $messages ) ) {
-			foreach( $messages as $message ) {
-
-				$html .= '<div class="mdjm-license-data mdjm-license-' . $class . '">';
-					$html .= '<p class="description">' . $message . '</p>';
-				$html .= '</div>';
-
-			}
-		}
-
-		wp_nonce_field( $args['id'] . '-nonce', $args['id'] . '-nonce' );
-
-		if ( isset( $license_status ) ) {
-			echo '<div class="' . $license_status . '">' . $html . '</div>';
-		} else {
-			echo '<div class="license-null">' . $html . '</div>';
-		}
-	}
-} // mdjm_license_key_callback*/
 
 /**
  * Hook Callback

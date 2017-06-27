@@ -1099,23 +1099,26 @@ function mdjm_event_metabox_details_time_row( $event_id )	{
 
 	global $mdjm_event, $mdjm_event_update;
 
-	$start  = $mdjm_event->get_start_time();
-	$finish = $mdjm_event->get_finish_time();
-	$format = mdjm_get_option( 'time_format', 'H:i' );
+	$start   = $mdjm_event->get_start_time();
+	$finish  = $mdjm_event->get_finish_time();
+	$format  = mdjm_get_option( 'time_format', 'H:i' );
+
+	$default_start  = mdjm_get_option( 'event_start_default' );
+	$default_finish = mdjm_get_option( 'event_finish_default' );
 
 	?>
     <div class="mdjm_field_wrap mdjm_form_fields">
     	<div class="mdjm_col col2">
         	<label for="event_start_hr"><?php _e( 'Start Time:', 'mobile-dj-manager' ); ?></label><br />
 			<?php echo MDJM()->html->time_hour_select( array(
-                'selected' => ! empty( $start ) ? date( $format[0], strtotime( $start ) ) : ''
+                'selected' => ! empty( $start ) ? date( $format[0], strtotime( $start ) ) : date( $format[0], strtotime( $default_start ) )
             ) ); ?> 
             <?php echo MDJM()->html->time_minute_select( array(
-                'selected' => ! empty( $start ) ? date( $format[2], strtotime( $start ) ) : ''
+                'selected' => ! empty( $start ) ? date( $format[2], strtotime( $start ) ) : date( $format[2], strtotime( $default_start ) )
             ) ); ?> 
             <?php if ( 'H:i' != $format ) : ?>
                 <?php echo MDJM()->html->time_period_select( array(
-                    'selected' => ! empty( $start ) ? date( 'A', strtotime( $start ) ) : ''
+                    'selected' => ! empty( $start ) ? date( 'A', strtotime( $start ) ) : date( 'A', strtotime( $default_start ) )
                 ) ); ?>
             <?php endif; ?>
         </div>
@@ -1124,16 +1127,16 @@ function mdjm_event_metabox_details_time_row( $event_id )	{
         	<label for="event_finish_hr"><?php _e( 'End Time:', 'mobile-dj-manager' ); ?></label><br />
 			<?php echo MDJM()->html->time_hour_select( array(
                 'name'     => 'event_finish_hr',
-                'selected' => ! empty( $finish ) ? date( $format[0], strtotime( $finish ) ) : ''
+                'selected' => ! empty( $finish ) ? date( $format[0], strtotime( $finish ) ) : date( $format[0], strtotime( $default_finish ) )
             ) ); ?> 
             <?php echo MDJM()->html->time_minute_select( array(
                 'name'     => 'event_finish_min',
-                'selected' => ! empty( $finish ) ? date( $format[2], strtotime( $finish ) ) : ''
+                'selected' => ! empty( $finish ) ? date( $format[2], strtotime( $finish ) ) : date( $format[2], strtotime( $default_finish ) )
             ) ); ?> 
             <?php if ( 'H:i' != $format ) : ?>
                 <?php echo MDJM()->html->time_period_select( array(
                     'name'     => 'event_finish_period',
-                    'selected' => ! empty( $finish ) ? date( 'A', strtotime( $finish ) ) : ''
+                    'selected' => ! empty( $finish ) ? date( 'A', strtotime( $finish ) ) : date( 'A', strtotime( $default_finish ) )
                 ) ); ?>
             <?php endif; ?>
         </div>
@@ -1547,7 +1550,7 @@ function mdjm_event_metabox_admin_dj_setup_row( $event_id )	{
 
 	$setup_date = $mdjm_event->get_setup_date();
 	$setup_time = $mdjm_event->get_setup_time();
-	$format = mdjm_get_option( 'time_format', 'H:i' );
+	$format     = mdjm_get_option( 'time_format', 'H:i' );
 
 	?>
 	<div class="mdjm_field_wrap mdjm_form_fields">
