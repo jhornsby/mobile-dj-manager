@@ -931,6 +931,28 @@ add_action( 'wp_ajax_refresh_event_addon_options', 'mdjm_refresh_event_addon_opt
 add_action( 'wp_ajax_nopriv_refresh_event_addon_options', 'mdjm_refresh_event_addon_options_ajax' );
 
 /**
+ * Set the event setup date and time
+ *
+ * @since	1.4.8
+ * @return	arr
+ */
+function mdjm_set_event_setup_date_time_ajax()    {
+    $setup_interval = $_POST['setup_interval'];
+    $date_format    = 'Y-m-d H:i:s';
+    $event_date     = $_POST['event_date'];
+    $start_time     = $_POST['event_start'];
+    $setup_date     = $_POST['setup_date'];
+    $setup_time     = $_POST['setup_time'];
+
+    $event_datetime = DateTime::createFromFormat( $date_format, $event_date . ' ' . $start_time );
+
+    
+
+    error_log( var_export( $_POST, true ) );
+} // mdjm_set_event_setup_date_time_ajax
+add_action( 'wp_ajax_mdjm_set_event_setup_date_time', 'mdjm_set_event_setup_date_time_ajax' );
+
+/**
  * Check the availability status for the given date
  *
  * @since	1.3

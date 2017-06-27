@@ -224,6 +224,7 @@ function mdjm_register_admin_scripts( $hook )	{
 				'no_txn_for'           => __( 'What is the transaction for?', 'mobile-dj-manager' ),
 				'no_txn_src'           => __( 'Enter a transaction source', 'mobile-dj-manager' ),
 				'no_venue_name'        => __( 'Enter a name for the venue', 'mobile-dj-manager' ),
+                'time_format'          => mdjm_get_option( 'time_format' ),
 				'currency'             => mdjm_get_currency(),
 				'currency_symbol'      => mdjm_currency_symbol(),
 				'currency_sign'        => mdjm_currency_filter( '' ),
@@ -236,6 +237,7 @@ function mdjm_register_admin_scripts( $hook )	{
 				'one_item_min'         => __( 'Select at least one Add-on', 'mobile-dj-manager' ),
 				'min_travel_distance'  => mdjm_get_option( 'travel_min_distance' ),
 				'update_travel_cost'   => mdjm_get_option( 'travel_add_cost', false ),
+                'setup_interval'       => mdjm_get_option( 'event_setup_default', false ),
 				'zero_cost'            => sprintf( __( 'Are you sure you want to save this %s with a total cost of %s?', 'mobile-dj-manager' ), mdjm_get_label_singular( true ), mdjm_currency_filter( mdjm_format_amount( '0.00' ) ) )
 			)
 		)

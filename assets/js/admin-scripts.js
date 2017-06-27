@@ -1,3 +1,4 @@
+var mdjm_admin_vars;
 jQuery(document).ready(function ($) {
 
 	// Setup Chosen menus
@@ -528,6 +529,7 @@ jQuery(document).ready(function ($) {
 						$('#mdjm-equipment-loader').hide();
 						$('#mdjm-event-equipment-row').show();
 					}
+
 				}).fail(function (data) {
 					if ( window.console && window.console.log ) {
 						console.log( data );
@@ -539,12 +541,52 @@ jQuery(document).ready(function ($) {
 		},
 		
 		time : function()	{
-			// Set the DJ Setup Date
-			$( document.body ).on( 'change', '#display_event_date', function() {
-				if( $('#dj_setup_date').val().length < 1 )	{
-					$('#dj_setup_date').val($('#display_event_date').val());
-				}
-			});
+            if ( mdjm_admin_vars.setup_interval > 0 )   {
+                // Set the DJ Setup Date
+                $( document.body ).on( 'change', '#display_event_date,#event_start_hr,#event_start_min,#event_start_period', function() {
+                    /*if( $('#dj_setup_date').val().length < 1 )	{
+                        $('#dj_setup_date').val($('#display_event_date').val());
+                    }*/
+                    var event_date  = $('#display_event_date').val();
+                    var event_start = $('#event_start_hr').val() + ':' + $('#event_start_min').val();
+                    var setup_date  = $('#dj_setup_date').val();
+                    var setup_time  = $('#dj_setup_hr').val() + ':' + $('#dj_setup_min').val();
+
+                    if ( 'H:i' !== mdjm_admin_vars.time_format )    {
+                        event_start += $('#event_start_period').val();
+                        setup_time += $('#dj_setup_period').val();
+                    }
+
+                    var postData = {
+                        event_date     : event_date,
+                        event_start    : event_start,
+                        setup_date     : setup_date,
+                        setup_time     : setup_time,
+                        setup_interval : mdjm_admin_vars.setup_interval,
+                        action         : 'mdjm_set_event_setup_date_time'
+                    };
+                    $.ajax({
+                        type       : 'POST',
+                        dataType   : 'json',
+                        data       : postData,
+                        url        : ajaxurl,
+                        success    : function (response) {
+                            $('#dj_setup_date').val(response.display_setup_date);
+                            $('#_mdjm_event_djsetup').val(response.setup_date);
+                            $('#dj_setup_hr').val(response.setup_hour);
+                            $('#dj_setup_min').val(response.setup_minute);
+
+                            if ( 'H:i' !== mdjm_admin_vars.time_format )    {
+                                $('#dj_setup_period').val(response.setup_period);
+                            }
+                        }
+                    }).fail(function (data) {
+                        if ( window.console && window.console.log ) {
+                            console.log( data );
+                        }
+                    });
+                });
+            }
 		},
 
 		travel : function()	{

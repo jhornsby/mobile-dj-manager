@@ -83,6 +83,15 @@ Premium addons are available to enhance the plugin at http://mdjm.co.uk/add-ons/
 
 == Changelog ==
 
+= 1.4.8 =
+
+**Released XXXX, 2017**
+
+**New**
+
+* Set default event start and end times via Settings -> Events
+* Set default event setup time via Settings -> Events
+
 = 1.4.7 =
 
 **Released 19th June, 2017**
