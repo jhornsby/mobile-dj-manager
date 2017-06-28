@@ -938,17 +938,19 @@ add_action( 'wp_ajax_nopriv_refresh_event_addon_options', 'mdjm_refresh_event_ad
  */
 function mdjm_set_event_setup_date_time_ajax()    {
     $setup_interval = $_POST['setup_interval'];
-    $date_format    = 'Y-m-d H:i:s';
-    $event_date     = $_POST['event_date'];
-    $start_time     = $_POST['event_start'];
-    $setup_date     = $_POST['setup_date'];
-    $setup_time     = $_POST['setup_time'];
 
-    $event_datetime = DateTime::createFromFormat( $date_format, $event_date . ' ' . $start_time );
+	$event_date = strtotime( $_POST['event_date'] . ' ' . $_POST['event_start'] );
+	$setup_date = strtotime( $_POST['setup_date'] . ' ' . $_POST['setup_time'] );
 
-    
+	if ( $setup_interval > 0 )	{
+		$setup_date = strtotime( '-' . $setup_interval . ' minutes', $event_date );
+	}
 
-    error_log( var_export( $_POST, true ) );
+    wp_send_json_success( array(
+		'timestamp'     => $setup_date,
+		'setup_display' => date( mdjm_get_option( 'short_date_format', $setup_date ) ),
+		'setup_date'    => date( 'Y-m-d', $setup_date )
+	) );
 } // mdjm_set_event_setup_date_time_ajax
 add_action( 'wp_ajax_mdjm_set_event_setup_date_time', 'mdjm_set_event_setup_date_time_ajax' );
 

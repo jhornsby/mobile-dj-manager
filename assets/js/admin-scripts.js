@@ -544,17 +544,14 @@ jQuery(document).ready(function ($) {
             if ( mdjm_admin_vars.setup_interval > 0 )   {
                 // Set the DJ Setup Date
                 $( document.body ).on( 'change', '#display_event_date,#event_start_hr,#event_start_min,#event_start_period', function() {
-                    /*if( $('#dj_setup_date').val().length < 1 )	{
-                        $('#dj_setup_date').val($('#display_event_date').val());
-                    }*/
-                    var event_date  = $('#display_event_date').val();
-                    var event_start = $('#event_start_hr').val() + ':' + $('#event_start_min').val();
+                    var event_date  = $('#_mdjm_event_date').val();
+                    var event_start = $('#event_start_hr').val() + ':' + $('#event_start_min').val() + ':00';
                     var setup_date  = $('#dj_setup_date').val();
-                    var setup_time  = $('#dj_setup_hr').val() + ':' + $('#dj_setup_min').val();
+                    var setup_time  = $('#dj_setup_hr').val() + ':' + $('#dj_setup_min').val() + ':00';
 
                     if ( 'H:i' !== mdjm_admin_vars.time_format )    {
-                        event_start += $('#event_start_period').val();
-                        setup_time += $('#dj_setup_period').val();
+                        event_start += ' ' + $('#event_start_period').val();
+                        setup_time += ' ' + $('#dj_setup_period').val();
                     }
 
                     var postData = {
@@ -571,13 +568,31 @@ jQuery(document).ready(function ($) {
                         data       : postData,
                         url        : ajaxurl,
                         success    : function (response) {
-                            $('#dj_setup_date').val(response.display_setup_date);
-                            $('#_mdjm_event_djsetup').val(response.setup_date);
-                            $('#dj_setup_hr').val(response.setup_hour);
-                            $('#dj_setup_min').val(response.setup_minute);
+							var d = new Date();
+							var hours   = d.getHours( response.data.timestamp );
+							var minutes = d.getMinutes( response.data.timestamp );
+
+							if ( 'H:i' !== mdjm_admin_vars.time_format )    {
+								var period;
+
+                                if ( hours >= 12 )	{
+									period = 'PM';
+								} else	{
+									period = 'AM';
+								}
+
+								if ( hours >= 13 )	{
+									hours = hours - 12;
+								}
+                            }
+
+                            $('#dj_setup_date').val(response.data.setup_display);
+                            $('#_mdjm_event_djsetup').val(response.data.setup_date);
+                            $('#dj_setup_hr').val( hours );
+                            $('#dj_setup_min').val( minutes );
 
                             if ( 'H:i' !== mdjm_admin_vars.time_format )    {
-                                $('#dj_setup_period').val(response.setup_period);
+                                $('#dj_setup_period').val( period );
                             }
                         }
                     }).fail(function (data) {
