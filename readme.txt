@@ -91,6 +91,7 @@ Premium addons are available to enhance the plugin at http://mdjm.co.uk/add-ons/
 
 * Set default event start and end times via Settings -> Events
 * Set default event setup time via Settings -> Events
+* Added cache helper class to prevent caching of MDJM pages
 
 = 1.4.7 =
 
