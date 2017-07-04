@@ -128,3 +128,4 @@ class MDJM_Cache_Helper {
 } // class MDJM_Cache_Helper
 
 MDJM_Cache_Helper::init();
+

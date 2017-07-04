@@ -2,8 +2,8 @@
 Contributors: mikeyhoward1977
 Tags: Event Management, Event Planning, Event Planner, Events, DJ Event Planner, Mobile DJ
 Requires at least: 4.4
-Tested up to: 4.8
-Stable tag: 1.4.7
+Tested up to: 4.9
+Stable tag: 1.4.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://mdjm.co.uk/support-our-work/
@@ -91,7 +91,19 @@ Premium addons are available to enhance the plugin at http://mdjm.co.uk/add-ons/
 
 * Set default event start and end times via Settings -> Events
 * Set default event setup time via Settings -> Events
-* Added cache helper class to prevent caching of MDJM pages
+
+= 1.4.7.1 =
+
+**Released 4th July, 2017**
+
+**New**
+
+* Added MDJM_Cache_Helper class to automatically prevent caching of MDJM pages - so long as caching plugins adhere to standards!
+
+**Bug Fixes**
+
+* Fixed responsive display for events table
+>>>>>>> refs/remotes/origin/master
 
 = 1.4.7 =
 
