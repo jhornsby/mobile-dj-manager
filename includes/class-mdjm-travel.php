@@ -128,8 +128,8 @@ class MDJM_Travel {
 			$this->start_address = mdjm_get_option( 'travel_primary' );
 		}
 
-		$this->units = mdjm_get_option( 'travel_units' );
-		$this->add_travel_cost = mdjm_get_option( 'travel_add_cost' );
+		$this->units           = mdjm_get_option( 'travel_units' );
+		$this->add_travel_cost = mdjm_add_travel_cost_to_event();
 	} // init
 
 	/**

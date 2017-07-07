@@ -12,6 +12,16 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 
 /**
+ * Whether or not to add travel costs to event price.
+ *
+ * @since   1.5
+ * @return  bool
+ */
+function mdjm_add_travel_cost_to_event()    {
+    return mdjm_get_option( 'travel_add_cost', false );
+} // mdjm_add_travel_cost_to_event
+
+/**
  * Calculate the travel distance
  *
  * @since	1.3.8
