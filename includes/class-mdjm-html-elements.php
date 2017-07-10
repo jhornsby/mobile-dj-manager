@@ -579,12 +579,15 @@ class MDJM_HTML_Elements {
 					$args['event_date'] = NULL;
 				}
 
-				$price = '';
+				$package_price = mdjm_get_package_price( $package->ID, $args['event_date'] );
+				$price         = '';
 				if( $args['cost'] == true )	{
-					$price .= ' - ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_package_price( $package->ID, $args['event_date'] ) ) ) ;
+					$price .= ' - ' . mdjm_currency_filter( mdjm_format_amount( $package_price ) ) ;
 				}
 
 				$args['options'][ $package->ID ] = $package->post_title . '' . $price;
+
+				$args['prices'][ $package->ID ]   = mdjm_sanitize_amount( $package_price );
 
 				if ( $args['titles'] )	{
 					$titles[ $package->ID ] = mdjm_get_package_excerpt( $package->ID );
@@ -681,9 +684,10 @@ class MDJM_HTML_Elements {
 					$args['event_date'] = NULL;
 				}
 
+				$addon_price = mdjm_get_addon_price( $addon->ID, $args['event_date'] );
 				$price = '';
 				if( $args['cost'] == true )	{
-					$price .= ' - ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_addon_price( $addon->ID, $args['event_date'] ) ) ) ;
+					$price .= ' - ' . mdjm_currency_filter( mdjm_format_amount( $addon_price ) ) ;
 				}
 				$desc           = '';
 
@@ -703,6 +707,8 @@ class MDJM_HTML_Elements {
 				if ( $args['titles'] )	{
 					$titles[ $addon->ID ] = mdjm_get_addon_excerpt( $addon->ID );
 				}
+
+				$args['prices'][ $addon->ID ] = mdjm_sanitize_amount( $addon_price );
 
 			}
 		}
@@ -879,6 +885,7 @@ class MDJM_HTML_Elements {
 			'show_option_none' => false,
 			'options_only'     => false,
 			'titles'           => false,
+			'prices'           => false,
 			'data'             => array(),
 		);
 
@@ -937,7 +944,7 @@ class MDJM_HTML_Elements {
 				} else {
 					$selected = selected( $args['selected'], 0, false );
 				}
-				$output .= '<option value="0"' . $selected . '>' . esc_html( $args['show_option_none'] ) . '</option>' . "\r\n";
+				$output .= '<option value="0" data-price="' . mdjm_sanitize_amount( '0.00' ) . '"' . $selected . '>' . esc_html( $args['show_option_none'] ) . '</option>' . "\r\n";
 			}
 
 			if ( ! isset( $args['options']['groups'] ) )	{
@@ -954,7 +961,13 @@ class MDJM_HTML_Elements {
 						$title = ' title="' . $args['titles'][ $key ] . '"';
 					}
 
-					$output .= '<option value="' . esc_attr( $key ) . '"' . $title . '' . $selected . '>' . esc_html( $option ) . '</option>' . "\r\n";
+					$item_price = '0.00';
+					if ( ! empty( $args['prices'] ) && array_key_exists( $key, $args['prices'] ) )	{
+						$item_price = $args['prices'][ $key ];
+					}
+					$price = ' data-price="' . $item_price . '"';
+
+					$output .= '<option value="' . esc_attr( $key ) . '"' . $title . '' . $price . '' . $selected . '>' . esc_html( $option ) . '</option>' . "\r\n";
 				}
 				
 			} else	{
@@ -980,7 +993,13 @@ class MDJM_HTML_Elements {
 								$title = ' title="' . $args['titles'][ $key ] . '"';
 							}
 
-							$output .= '<option value="' . esc_attr( $key ) . '"' . $title . '' . $selected . '>' . esc_html( $option ) . '</option>' . "\r\n";
+							$item_price = '0.00';
+							if ( ! empty( $args['prices'] ) && array_key_exists( $key, $args['prices'] ) )	{
+								$item_price = $args['prices'][ $key ];
+							}
+							$price = ' data-price="' . $item_price . '"';
+
+							$output .= '<option value="' . esc_attr( $key ) . '"' . $title . '' . $price . '' . $selected . '>' . esc_html( $option ) . '</option>' . "\r\n";
 						}
 					}
 

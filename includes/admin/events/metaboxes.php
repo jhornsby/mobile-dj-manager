@@ -440,7 +440,7 @@ function mdjm_event_metabox_package_pricing_row( $event_id )	{
 		) ); ?></p>
    
     <p><?php _e( 'Addons:', 'mobile-dj-manager' ); ?> 
-        <span class="event_cost" id="event_package_price">
+        <span class="event_cost" id="event_addons_price">
             <?php echo mdjm_currency_filter( mdjm_sanitize_amount( $addons_price ) ); ?>
         </span>
         <?php echo MDJM()->html->hidden( array(
@@ -474,7 +474,7 @@ function mdjm_event_metabox_travel_pricing_row( $event_id )	{
 
 	?>
     <p><?php _e( 'Travel:', 'mobile-dj-manager' ); ?> 
-    <span class="event_cost" id="event_package_price">
+    <span class="event_cost" id="event_travel_price">
         <?php echo mdjm_currency_filter( mdjm_sanitize_amount( $travel_price ) ); ?>
     </span>
 		<?php echo MDJM()->html->hidden( array(
