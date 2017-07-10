@@ -26,7 +26,6 @@ jQuery(document).ready(function ($) {
             interval: 15,
             minTime: '0',
             maxTime: '11:59pm',
-            defaultTime: '19',
             startTime: '19',
             dynamic: false,
             dropdown: true,
@@ -147,20 +146,19 @@ jQuery(document).ready(function ($) {
 
     /*=Event Builder
     ---------------------------------------------------- */
-
     var current_field_step, next_field_step, previous_field_step; //fieldsets
     var left, opacity, scale; //fieldset properties which we will animate
     var animating; //flag to prevent quick multi-click glitches
 
-    $(".next").click(function() {
+    $('.next').click(function() {
         if(animating) return false;
         animating = true;
-	
+
         current_field_step = $(this).parent();
         next_field_step = $(this).parent().next();
-	
+
         //activate next step on progress-bar using the index of next_field_step
-        $("#progress-bar li").eq($("fieldset").index(next_field_step)).addClass("active");
+        $('#progress-bar li').eq($('fieldset').index(next_field_step)).addClass('active');
 	
         //show the next fieldset
         next_field_step.show(); 
@@ -190,7 +188,7 @@ jQuery(document).ready(function ($) {
         });
     });
 
-    $(".previous").click(function(){
+    $('.previous').click(function(){
         if(animating) return false;
         animating = true;
 	
@@ -198,7 +196,7 @@ jQuery(document).ready(function ($) {
         previous_field_step = $(this).parent().prev();
 	
         //de-activate current step on progress-bar
-        $("#progress-bar li").eq($("fieldset").index(current_field_step)).removeClass("active");
+        $('#progress-bar li').eq($('fieldset').index(current_field_step)).removeClass('active');
 	
         //show the previous fieldset
         previous_field_step.show(); 
@@ -225,9 +223,9 @@ jQuery(document).ready(function ($) {
         });
     });
 
-$(".submit").click(function(){
-	return false;
-})
+	$('.submit').click(function(){
+		return false;
+	})
 
 
 	$('#mdjm-availability-check').validate({

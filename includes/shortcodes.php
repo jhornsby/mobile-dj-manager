@@ -640,6 +640,15 @@ function mdjm_shortcode_event_builder( $atts )	{
 		)
 	);
 
+	mdjm_insert_datepicker(
+		array(
+			'class'    => '',
+			'id'       => 'event-finish-date-display',
+			'altfield' => 'event-finish-date',
+			'mindate'  => '1'
+		)
+	);
+
     mdjm_get_template_part( 'event', 'builder' );
     $output .= mdjm_do_content_tags( ob_get_contents() );
     ob_get_clean();
