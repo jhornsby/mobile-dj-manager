@@ -53,6 +53,7 @@ class MDJM_Cache_Helper {
 		if ( false === ( $mdjm_page_uris = get_transient( 'mdjm_cache_excluded_uris' ) ) )	{
 			$mdjm_page_uris = array_filter( array_merge(
                 self::get_page_uris( 'app_home' ),
+                self::get_page_uris( 'event_builder' ),
                 self::get_page_uris( 'contact' ),
                 self::get_page_uris( 'contracts' ),
                 self::get_page_uris( 'payment' ),

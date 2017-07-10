@@ -878,6 +878,15 @@ function mdjm_get_registered_settings()	{
 						'type'        => 'select',
 						'options'     => mdjm_list_pages()
 					),
+                    'event_builder_page'    => array(
+						'id'          => 'event_builder_page',
+						'name'        => sprintf( __( '%s Builder Page', 'mobile-dj-manager' ), mdjm_get_label_singular() ),
+						'desc'        => sprintf( __( "Select the page where clients can build their own %s. Needs to contain the shortcode <code>[mdjm-event-builder]</code>", 'mobile-dj-manager' ),
+											mdjm_get_label_plural()
+                        ),
+						'type'        => 'select',
+						'options'     => mdjm_list_pages()
+					),
 					'quotes_page'      => array(
 						'id'          => 'quotes_page',
 						'name'        => __( 'Online Quotes Page', 'mobile-dj-manager' ),

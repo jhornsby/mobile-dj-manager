@@ -17,6 +17,23 @@ jQuery(document).ready(function ($) {
 		});
 	}
 
+    /* = Timepicker
+	====================================================================================== */
+    var mdjm_timepicker = $('.mdjm_timepicker' );
+    if ( mdjm_timepicker.length > 0 ) {
+        $('input.mdjm_timepicker').timepicker({
+            timeFormat: mdjm_vars.timepicker_format,
+            interval: 15,
+            minTime: '0',
+            maxTime: '11:59pm',
+            defaultTime: '19',
+            startTime: '19',
+            dynamic: false,
+            dropdown: true,
+            scrollbar: true
+        });
+    }
+
 	/*=Payments Form
 	---------------------------------------------------- */
 	// Load the fields for the selected payment method
@@ -127,6 +144,91 @@ jQuery(document).ready(function ($) {
 			});
 		});
 	}
+
+    /*=Event Builder
+    ---------------------------------------------------- */
+
+    var current_field_step, next_field_step, previous_field_step; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function() {
+        if(animating) return false;
+        animating = true;
+	
+        current_field_step = $(this).parent();
+        next_field_step = $(this).parent().next();
+	
+        //activate next step on progress-bar using the index of next_field_step
+        $("#progress-bar li").eq($("fieldset").index(next_field_step)).addClass("active");
+	
+        //show the next fieldset
+        next_field_step.show(); 
+        //hide the current fieldset with style
+        current_field_step.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_field_step reduces to 0 - stored in "now"
+                //1. scale current_field_step down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_field_step from the right(50%)
+                left = (now * 50)+"%";
+                //3. increase opacity of next_field_step to 1 as it moves in
+                opacity = 1 - now;
+                current_field_step.css({
+            'transform': 'scale('+scale+')',
+            'position': 'absolute'
+          });
+                next_field_step.css({'left': left, 'opacity': opacity});
+            }, 
+            duration: 800, 
+            complete: function(){
+                current_field_step.hide();
+                animating = false;
+            }, 
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function(){
+        if(animating) return false;
+        animating = true;
+	
+        current_field_step = $(this).parent();
+        previous_field_step = $(this).parent().prev();
+	
+        //de-activate current step on progress-bar
+        $("#progress-bar li").eq($("fieldset").index(current_field_step)).removeClass("active");
+	
+        //show the previous fieldset
+        previous_field_step.show(); 
+        //hide the current fieldset with style
+        current_field_step.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_field_step reduces to 0 - stored in "now"
+                //1. scale previous_field_step from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_field_step to the right(50%) - from 0%
+                left = ((1-now) * 50)+"%";
+                //3. increase opacity of previous_field_step to 1 as it moves in
+                opacity = 1 - now;
+                current_field_step.css({'left': left});
+                previous_field_step.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+            }, 
+            duration: 800, 
+            complete: function(){
+                current_field_step.hide();
+                animating = false;
+            }, 
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+$(".submit").click(function(){
+	return false;
+})
+
 
 	$('#mdjm-availability-check').validate({
 		rules: {

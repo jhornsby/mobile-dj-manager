@@ -769,6 +769,120 @@ a	{
 	left: -35px;
 }
 
+/* = Event Builder
+-------------------------------------------------------------- */
+#mdjm-event-builder-form {
+	width: 600px;
+	margin: 50px auto;
+	text-align: center;
+	position: relative;
+}
+
+#mdjm-event-builder-form fieldset {
+	background: white;
+	border: 0 none;
+	border-radius: 3px;
+	padding: 20px 30px;
+	box-sizing: border-box;
+	width: 80%;
+	margin: 0 10%;
+	
+	/*stacking fieldsets above each other*/
+	position: relative;
+}
+
+#mdjm-event-builder-form fieldset:not(:first-of-type) {
+	display: none;
+}
+
+#mdjm-event-builder-form input, #mdjm-event-builder-form textarea {
+	padding: 15px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	color: #2C3E50;
+}
+
+/* Buttons */
+#mdjm-event-builder-form .action-button {
+	width: 100px;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
+}
+
+#mdjm-event-builder-form .action-button:hover, #mdjm-event-builder-form .action-button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+
+/* Headings */
+.mdjm_eb_title {
+	font-size: 15px;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+}
+.mdjm_eb_subtitle {
+	font-weight: normal;
+	font-size: 13px;
+	color: #666;
+	margin-bottom: 20px;
+}
+
+/* Progress Bar */
+#progress-bar {
+	margin-bottom: 25px;
+	overflow: hidden;
+	counter-reset: step;
+}
+#progress-bar li {
+	list-style-type: none;
+	color: white;
+	text-transform: uppercase;
+	font-size: 9px;
+	width: 25%;
+	float: left;
+	position: relative;
+}
+#progress-bar li:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 20px;
+	line-height: 20px;
+	display: block;
+	font-size: 10px;
+	color: #000;
+	background: grey;
+	border-radius: 3px;
+	margin: 0 auto 5px auto;
+}
+/* Connectors */
+#progress-bar li:after {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: green;
+	position: absolute;
+	left: -50%;
+	top: 9px;
+	z-index: -1;
+}
+#progress-bar li:first-child:after {
+	content: none; 
+}
+/* Marking active/completed steps */
+/* The number of the step and the connector before it is marked completed */
+#progress-bar li.active:before,  #progress-bar li.active:after{
+	background: #27AE60;
+	color: white;
+}
+
 /* =Availability Widget
 -------------------------------------------------------------- */
 
