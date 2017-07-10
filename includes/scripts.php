@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) )
  * @return	void
  */
 function mdjm_load_scripts()	{
+    global $post;
 
 	$js_dir = MDJM_PLUGIN_URL . '/assets/js/';
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
@@ -51,6 +52,7 @@ function mdjm_load_scripts()	{
 				'no_card_name'          => __( 'Enter the name printed on your card', 'mobile-dj-manager' ),
 				'complete_payment'      => mdjm_get_payment_button_text(),
 				'date_format'           => mdjm_format_datepicker_date(),
+                'timepicker_format'     => 'H:i' == get_option( 'time_format' ) ? 'HH:mm' : 'h:mm p',
                 'first_day'             => get_option( 'start_of_week' )
 			)
 		)
@@ -60,6 +62,15 @@ function mdjm_load_scripts()	{
 	wp_enqueue_script( 'jquery-validation-plugin');
 
 	wp_enqueue_script( 'jquery-ui-datepicker', array( 'jquery' ) );
+
+    if ( ! empty( $post ) )	{
+		if ( is_a( $post, 'WP_Post' ) )   {
+            if ( has_shortcode( $post->post_content, 'mdjm-event-builder' ) )   {
+                wp_register_script( 'jquery-timepicker-js', $js_dir . 'jquery.timepicker' . $suffix . '.js', array(), MDJM_VERSION_NUM );
+                wp_enqueue_script( 'jquery-timepicker-js' );
+            }
+        }
+	}
 
 } // mdjm_load_scripts
 add_action( 'wp_enqueue_scripts', 'mdjm_load_scripts' );
@@ -101,9 +112,16 @@ function mdjm_register_styles()	{
 	wp_enqueue_style( 'font-awesome' );
 
 	if ( ! empty( $post ) )	{
-		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'mdjm-availability' ) )	{
-			wp_register_style( 'jquery-ui-css', $css_dir . 'jquery-ui' . $suffix . '.css', array(), MDJM_VERSION_NUM );
-		}
+		if ( is_a( $post, 'WP_Post' ) )   {
+            if ( has_shortcode( $post->post_content, 'mdjm-availability' )  || has_shortcode( $post->post_content, 'mdjm-event-builder' ) )	{
+                wp_register_style( 'jquery-ui-css', $css_dir . 'jquery-ui' . $suffix . '.css', array(), MDJM_VERSION_NUM );
+            }
+            if ( has_shortcode( $post->post_content, 'mdjm-event-builder' ) )   {
+                wp_enqueue_script( 'jquery-effects-core' );
+                wp_register_style( 'jquery-timepicker-css', $css_dir . 'jquery.timepicker' . $suffix . '.css', array(), MDJM_VERSION_NUM );
+                wp_enqueue_style( 'jquery-timepicker-css' );
+            }
+        }
 	}
 
 	if ( mdjm_is_payment( true ) ) {

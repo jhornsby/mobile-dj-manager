@@ -16,54 +16,7 @@
  * @return	string
  */
 function shortcode_mdjm( $atts )	{
-	// Array mapping the args to the pages/functions
-	$pairs = array(
-		'Home'          => 'mdjm_shortcode_home',
-		'Profile'       => MDJM_CLIENTZONE . '/pages/mdjm-profile.php',
-		'Playlist'      => 'mdjm_shortcode_playlist',
-		'Contract'      => 'mdjm_shortcode_contract',
-		'Availability'  => 'f_mdjm_availability_form',
-		'Online Quote'  => 'mdjm_shortcode_quote',
-	);
-	
-	$pairs = apply_filters( 'mdjm_filter_shortcode_pairs', $pairs );
-					
-	$args = shortcode_atts( $pairs, $atts, 'MDJM' );
-	
-	if( isset( $atts['page'] ) && !array_key_exists( $atts['page'], $pairs ) )	{
-		$output = __( 'ERROR: Unknown Page', 'mobile-dj-manager' );
-	} else	{
-	/* Process pages */
-		if( !empty( $atts['page'] ) )	{
-			ob_start();
-			
-			if ( function_exists( $args[ $atts['page'] ] ) )	{
-				$func = $args[ $atts['page'] ];
-				return $func( $atts );
-			} else	{
-				include_once( $args[$atts['page']] );
-				if( $atts['page'] == 'Contact Form' )
-					do_action( 'mdjm_dcf_execute_shortcode', $atts );
-	
-				$output = ob_get_clean();
-			}
-		}
-		/* Process Functions */
-		elseif( !empty( $atts['function'] ) )	{
-			$func = $args[$atts['function']];
-			if( function_exists( $func ) )	{
-				ob_start();
-				$func( $atts );
-				$output = ob_get_clean();
-			}
-			else	{
-				return __( 'An error has occurred', 'mobile-dj-manager' );
-			}
-		}
-		else
-			return;
-	}
-	return $output;
+	return __( 'Use of the <strong>MDJM</strong> shortcode is no longer supported. Please review the documentation for the updated shortcodes.' );
 } // shortcode_mdjm
 add_shortcode( 'MDJM', 'shortcode_mdjm' );
 
@@ -664,3 +617,34 @@ function mdjm_shortcode_login( $atts )	{
 
 } // mdjm_shortcode_home
 add_shortcode( 'mdjm-login', 'mdjm_shortcode_login' );
+
+/**
+ * Event Builder Shortcode.
+ *
+ * Display the event builder form.
+ * 
+ * @since	1.6
+ *
+ * @return	string
+ */
+function mdjm_shortcode_event_builder( $atts )	{
+	
+	ob_start();
+
+    mdjm_insert_datepicker(
+		array(
+			'class'    => '',
+			'id'       => 'event-date-display',
+			'altfield' => 'event-date',
+			'mindate'  => '1'
+		)
+	);
+
+    mdjm_get_template_part( 'event', 'builder' );
+    $output .= mdjm_do_content_tags( ob_get_contents() );
+    ob_get_clean();
+
+
+    return $output;
+} // mdjm_shortcode_event_builder
+add_shortcode( 'mdjm-event-builder', 'mdjm_shortcode_event_builder' );
