@@ -675,7 +675,8 @@ a	{
 	content: ".";
 }
 
-#mdjm_payment_wrap span.mdjm-description {
+#mdjm_payment_wrap span.mdjm-description,
+#mdjm-event-builder-wrap span.mdjm-description    {
 	color: #666;
 	font-size: 80%;
 	display: block;
@@ -683,38 +684,45 @@ a	{
 }
 
 #mdjm_payment_wrap input.mdjm-input,
-#mdjm_payments_form_wrap input.mdjm-input	{
+#mdjm_payments_form_wrap input.mdjm-input,
+#mdjm-event-builder-wrap input.mdjm-input,
+#mdjm-event-builder-form-wrap input.mdjm-input    {
 	display: inline-block;
 	width: 70%;
 }
 
-#mdjm_payment_wrap fieldset legend	{
+#mdjm_payment_wrap fieldset legend,
+#mdjm-event-builder-wrap legend    {
 	padding-left: 1.5px;
 	padding-right: 1.5px;
 	font-weight: bold;
 }
 
-#mdjm_payments_form_wrap fieldset fieldset {
+#mdjm_payments_form_wrap fieldset fieldset,
+#mdjm-event-builder-form-wrap fieldset fieldset    {
 	margin: 0;
 	border: none;
 	padding: 0;
 }
 
-#mdjm_payments_form_wrap input.mdjm-input.error	{
+#mdjm_payments_form_wrap input.mdjm-input.error,
+#mdjm-event-builder-form-wrap input.mdjm-input-error    {
 	border-color: #c4554e;
 }
 
-#mdjm_payments_form_wrap fieldset {
+#mdjm_payments_form_wrap fieldset,
+#mdjm-event-builder-form-wrap fieldset    {
 	border: 1px solid #eee;
 	padding: 1.387em;
 	margin: 0 0 21px;
 }
-#mdjm_payments_form_wrap #mdjm_payment_submit {
-	padding: 0;
-	border: none;
+#mdjm_payments_form_wrap #mdjm_payment_submit,
+#mdjm-event-builder-form-wrap #mdjm-event-builder-submit    {
+    margin: 10px;
 }
 
-#mdjm_payments_form_wrap label {
+#mdjm_payments_form_wrap label,
+#mdjm-event-builder-form-wrap label    {
 	font-weight: bold;
 	display: block;
 	position: relative;
@@ -723,7 +731,8 @@ a	{
 	margin: 0 0 5px;
 }
 
-#mdjm_payments_form_wrap label:after {
+#mdjm_payments_form_wrap label:after,
+#mdjm-event-builder-form-wrap label:after    {
 	display: block;
 	visibility: hidden;
 	float: none;
@@ -733,7 +742,8 @@ a	{
 	content: ".";
 }
 
-#mdjm_payments_form_wrap span.mdjm-required-indicator {
+#mdjm_payments_form_wrap span.mdjm-required-indicator,
+#mdjm-event-builder-form-wrap span.mdjm-required-indicator    {
 	color: #b94a48;
 	display: inline;
 }
@@ -775,14 +785,14 @@ a	{
 
 /* = Event Builder
 -------------------------------------------------------------- */
-#mdjm-event-builder-form {
+/*#mdjm-event-builder-form {
 	width: 600px;
 	margin: 50px auto;
 	text-align: center;
 	position: relative;
-}
+}*/
 
-#mdjm-event-builder-form fieldset {
+/*#mdjm-event-builder-form fieldset {
 	background: white;
 	border: 0 none;
 	border-radius: 3px;
@@ -791,24 +801,23 @@ a	{
 	width: 80%;
 	margin: 0 10%;
 	
-	/*stacking fieldsets above each other*/
 	position: relative;
-}
+}*/
 
 #mdjm-event-builder-form fieldset:not(:first-of-type) {
 	display: none;
 }
 
-#mdjm-event-builder-form input, #mdjm-event-builder-form textarea, #mdjm-event-builder-form select {
+/*#mdjm-event-builder-form input, #mdjm-event-builder-form textarea, #mdjm-event-builder-form select {
 	padding: 15px;
 	border-radius: 3px;
 	margin-bottom: 10px;
 	width: 100%;
 	box-sizing: border-box;
-}
+}*/
 
 /* Buttons */
-#mdjm-event-builder-form .action-button {
+/*#mdjm-event-builder-form .action-button {
 	width: auto;
 	min-width: 30%;
 	font-weight: bold;
@@ -817,7 +826,7 @@ a	{
 	cursor: pointer;
 	padding: 10px 5px;
 	margin: 10px 5px;
-}
+}*/
 
 /* Headings */
 .mdjm_eb_title {
@@ -834,6 +843,7 @@ a	{
 
 /* Progress Bar */
 #progress-bar {
+    text-align: center;
 	margin-bottom: 25px;
 	overflow: hidden;
 	counter-reset: step;
