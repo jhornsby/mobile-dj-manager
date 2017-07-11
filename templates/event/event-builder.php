@@ -11,14 +11,16 @@
  * If you wish to make changes, copy this file to your theme directory /theme/mdjm-templates/event/event-single.php
  */
 
-$event_date_progress     = sprintf( __( '%s Date', 'mobile-dj-manager' ), mdjm_get_label_singular() );
+$singular_label          = mdjm_get_label_singular();
+
+$event_date_progress     = sprintf( __( '%s Date', 'mobile-dj-manager' ), $singular_label );
 $client_details_progress = __( 'About You', 'mobile-dj-manager' );
-$event_details_progress  = sprintf( __( 'Your %s', 'mobile-dj-manager' ), mdjm_get_label_singular() );
+$event_details_progress  = sprintf( __( 'Your %s', 'mobile-dj-manager' ), $singular_label );
 $event_package_progress  = __( 'Extras', 'mobile-dj-manager' );
 
 $event_date_heading      = __( 'Select a Date', 'mobile-dj-manager' );
 $client_details_heading  = __( 'Tell us About You', 'mobile-dj-manager' );
-$event_details_heading   = sprintf( __( 'Details of your %s', 'mobile-dj-manager' ), mdjm_get_label_singular() );
+$event_details_heading   = sprintf( __( 'Details of your %s', 'mobile-dj-manager' ), $singular_label );
 $event_package_heading   = __( 'Select a Package', 'mobile-dj-manager' );
 
 $prev_button_label       = __( 'Previous', 'mobile-dj-manager' );
