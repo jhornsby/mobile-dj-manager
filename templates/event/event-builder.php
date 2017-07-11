@@ -29,8 +29,7 @@ $submit_button_label     = __( 'Submit', 'mobile-dj-manager' );
 
 $packages_enabled        = mdjm_packages_enabled();
 
-?>
-<?php do_action( 'mdjm_pre_event_builder' ); ?>
+do_action( 'mdjm_pre_event_builder' ); ?>
 
 <div id="mdjm-event-builder" class="mdjm_event_builder">
 
