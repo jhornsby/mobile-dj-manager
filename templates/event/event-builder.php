@@ -36,6 +36,8 @@ $packages_enabled        = mdjm_packages_enabled();
 
 	<div class="mdjm-alert mdjm-alert-error mdjm-hidden"></div>
 
+    <?php do_action( 'mdjm_event_builder_before_form' ); ?>
+
     <form id="mdjm-event-builder-form">
 
         <ul id="progress-bar">
@@ -47,6 +49,7 @@ $packages_enabled        = mdjm_packages_enabled();
                 <li><?php echo $event_package_progress; ?></li>
             <?php endif; ?>
 
+            <?php do_action( 'mdjm_event_builder_progress_bar' ); ?>
         </ul>
 
         <!-- Event Date -->
@@ -54,10 +57,14 @@ $packages_enabled        = mdjm_packages_enabled();
 
             <h2 class="mdjm_eb_title"><?php echo $event_date_heading; ?></h2>
             <h3 class="mdjm_eb_subtitle"><?php _e( 'Step One', 'mobile-dj-manager' ); ?></h3>
-            <input type="date" name="event_date_display" id="event-date-display" class="mdjm-input mdjm-date" placeholder="Date" />
 
+            <?php do_action( 'mdjm_event_builder_before_date_field' ); ?>
+
+            <input type="date" name="event_date_display" id="event-date-display" class="mdjm-input mdjm-date" placeholder="Date" />
             <input type="hidden" name="event_date" id="event-date" />
             <input type="button" name="next" class="next action-button date" value="<?php echo $next_button_label; ?>" />
+
+            <?php do_action( 'mdjm_event_builder_after_date_field' ); ?>
 
         </fieldset>
 
@@ -66,10 +73,15 @@ $packages_enabled        = mdjm_packages_enabled();
 
             <h2 class="mdjm_eb_title"><?php echo $client_details_heading; ?></h2>
             <h3 class="mdjm_eb_subtitle"><?php _e( 'Step Two', 'mobile-dj-manager' ); ?></h3>
+
+            <?php do_action( 'mdjm_event_builder_before_client_fields' ); ?>
+
             <input type="text" name="client_firstname" id="client-first-name" placeholder="<?php _e( 'First Name', 'mobile-dj-manager' ); ?>" />
             <input type="text" name="client_lastname" id="client-last-name" class="mdjm-input" placeholder="<?php _e( 'Last Name', 'mobile-dj-manager' ); ?>" />
             <input type="email" name="client_email" id="client-email" class="mdjm-input" placeholder="<?php _e( 'Email Address', 'mobile-dj-manager' ); ?>" />
             <input type="tel" name="client_tel" id="client-tel" class="mdjm-input" placeholder="<?php _e( 'Telephone', 'mobile-dj-manager' ); ?>" />
+
+            <?php do_action( 'mdjm_event_builder_after_client_fields' ); ?>
 
             <input type="button" name="previous" class="previous action-button" value="<?php echo $prev_button_label; ?>" />
             <input type="button" name="next" class="next action-button" value="<?php echo $next_button_label; ?>" />
@@ -81,16 +93,20 @@ $packages_enabled        = mdjm_packages_enabled();
 
 			<h2 class="mdjm_eb_title"><?php echo $event_details_heading; ?></h2>
             <h3 class="mdjm_eb_subtitle"><?php _e( 'Step Three', 'mobile-dj-manager' ); ?></h3>
+
+            <?php do_action( 'mdjm_event_builder_before_event_fields' ); ?>
+
             <input type="text" name="event_start_time" id="event-start-time" class="mdjm_timepicker mdjm-time" placeholder="<?php _e( 'Start Time', 'mobile-dj-manager' ); ?>" />
             <input type="text" name="event_finish_time" id="event-finish-time" class="mdjm_timepicker mdjm-time" placeholder="<?php _e( 'Finish Time', 'mobile-dj-manager' ); ?>" />
             <input type="date" name="event_finish_date_display" id="event-finish-date-display" class="mdjm-input mdjm-date" placeholder="Finish Date" />
             <input type="hidden" name="event_finish_date" id="event-finish-date" />
 
 			<?php echo MDJM()->html->event_type_dropdown( array(
-				'name'             => 'event_type',
-				//'class'            => 'mdjm-input',
-				'id'               => 'event-type'
+				'name' => 'event_type',
+				'id'   => 'event-type'
 			) ); ?>
+
+            <?php do_action( 'mdjm_event_builder_after_event_fields' ); ?>
 
 			<input type="button" name="previous" class="previous action-button" value="<?php echo $prev_button_label; ?>" />
             <input type="button" name="next" class="next action-button" value="<?php echo $next_button_label; ?>" />
@@ -103,6 +119,9 @@ $packages_enabled        = mdjm_packages_enabled();
 
                 <h2 class="mdjm_eb_title"><?php echo $event_details_heading; ?></h2>
                 <h3 class="mdjm_eb_subtitle"><?php _e( 'Step Three', 'mobile-dj-manager' ); ?></h3>
+
+                <?php do_action( 'mdjm_event_builder_before_package_field' ); ?>
+
                 <input type="text" name="event_start_time" id="event-start-time" class="mdjm_timepicker mdjm-time" placeholder="<?php _e( 'Start Time', 'mobile-dj-manager' ); ?>" />
                 <input type="text" name="event_finish_time" id="event-finish-time" class="mdjm_timepicker mdjm-time" placeholder="<?php _e( 'Finish Time', 'mobile-dj-manager' ); ?>" />
                 <input type="date" name="event_finish_date_display" id="event-finish-date-display" class="mdjm-input mdjm-date" placeholder="Finish Date" />
@@ -114,13 +133,19 @@ $packages_enabled        = mdjm_packages_enabled();
                     'id'               => 'event-type'
                 ) ); ?>
 
+                <?php do_action( 'mdjm_event_builder_after_package_field' ); ?>
+
                 <input type="button" name="previous" class="previous action-button" value="<?php echo $prev_button_label; ?>" />
                 <input type="submit" name="submit" class="submit action-button" value="<?php echo $submit_button_label; ?>" />
 
             </fieldset>
         <?php endif; ?>
 
+        <?php do_action( 'mdjm_event_builder_after_fieldsets' ); ?>
+
     </form>
+
+    <?php do_action( 'mdjm_event_builder_after_form' ); ?>
 
 </div>
 
