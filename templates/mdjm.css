@@ -785,36 +785,9 @@ a	{
 
 /* = Event Builder
 -------------------------------------------------------------- */
-/*#mdjm-event-builder-form {
-	width: 600px;
-	margin: 50px auto;
-	text-align: center;
-	position: relative;
-}*/
-
-/*#mdjm-event-builder-form fieldset {
-	background: white;
-	border: 0 none;
-	border-radius: 3px;
-	padding: 20px 30px;
-	box-sizing: border-box;
-	width: 80%;
-	margin: 0 10%;
-	
-	position: relative;
-}*/
-
 #mdjm-event-builder-form fieldset:not(:first-of-type) {
 	display: none;
 }
-
-/*#mdjm-event-builder-form input, #mdjm-event-builder-form textarea, #mdjm-event-builder-form select {
-	padding: 15px;
-	border-radius: 3px;
-	margin-bottom: 10px;
-	width: 100%;
-	box-sizing: border-box;
-}*/
 
 /* Buttons */
 #mdjm-event-builder-form .action-button {
@@ -827,21 +800,9 @@ a	{
 	float: left;
 }
 
-#mdjm-event-builder-form .next	{
+#mdjm-event-builder-form .next,
+#mdjm-event-builder-form .submit	{
 	float: right;
-}
-
-/* Headings */
-.mdjm_eb_title {
-	font-size: 15px;
-	text-transform: uppercase;
-	margin-bottom: 10px;
-}
-.mdjm_eb_subtitle {
-	font-weight: normal;
-	font-size: 13px;
-	color: #666;
-	margin-bottom: 20px;
 }
 
 /* Progress Bar */

@@ -70,7 +70,7 @@ do_action( 'mdjm_pre_event_builder' ); ?>
                     <input type="hidden" name="event_date" id="event-date" />
                 </p>
 
-                <button type="button" name="next" class="next action-button date"><?php echo $next_button_label; ?></button>
+                <input type="button" name="next" class="next action-button date" value="<?php echo $next_button_label; ?>" />
 
                 <?php do_action( 'mdjm_event_builder_after_date_field' ); ?>
             </fieldset>
@@ -115,8 +115,8 @@ do_action( 'mdjm_pre_event_builder' ); ?>
 
                 <?php do_action( 'mdjm_event_builder_after_client_fields' ); ?>
 
-                <button type="button" name="previous" class="previous action-button"><?php echo $prev_button_label; ?></button>
-                <button type="button" name="next" class="next action-button"><?php echo $next_button_label; ?></button>
+                <input type="button" name="previous" class="previous action-button" value="<?php echo $prev_button_label; ?>" />
+                <input type="button" name="next" class="next action-button" value="<?php echo $next_button_label; ?>" />
             </fieldset>
 
             <!-- Event Details -->
@@ -161,16 +161,14 @@ do_action( 'mdjm_pre_event_builder' ); ?>
 
                 <?php do_action( 'mdjm_event_builder_after_event_fields' ); ?>
 
-                <button type="button" name="previous" class="previous action-button"><?php echo $prev_button_label; ?></button>
-                <button type="button" name="next" class="next action-button"><?php echo $next_button_label; ?></button>
+                <input type="button" name="previous" class="previous action-button" value="<?php echo $prev_button_label; ?>" />
+                <input type="button" name="next" class="next action-button" value="<?php echo $next_button_label; ?>" />
             </fieldset>
 
             <!-- Extras -->
             <?php if ( $packages_enabled ) : ?>
                 <fieldset>
-
-                    <h2 class="mdjm_eb_title"><?php echo $event_details_heading; ?></h2>
-                    <h3 class="mdjm_eb_subtitle"><?php _e( 'Step Three', 'mobile-dj-manager' ); ?></h3>
+					<legend><?php echo $event_package_heading; ?></legend>
 
                     <?php do_action( 'mdjm_event_builder_before_package_field' ); ?>
 
