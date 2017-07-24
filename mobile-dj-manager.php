@@ -180,7 +180,9 @@ if( ! class_exists( 'Mobile_DJ_Manager' ) ) :
 			require_once( MDJM_PLUGIN_DIR . '/includes/class-mdjm-html-elements.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/events/class-events.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/events/event-functions.php' );
+            require_once( MDJM_PLUGIN_DIR . '/includes/events/event-builder.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/events/event-actions.php' );
+            require_once( MDJM_PLUGIN_DIR . '/includes/events/event-builder-actions.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/journal-functions.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/emails/class-mdjm-emails.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/emails/email-functions.php' );
