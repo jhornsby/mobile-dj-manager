@@ -785,10 +785,6 @@ a	{
 
 /* = Event Builder
 -------------------------------------------------------------- */
-#mdjm-event-builder-form fieldset:not(:first-of-type) {
-	display: none;
-}
-
 /* Buttons */
 #mdjm-event-builder-form .action-button {
 	width: auto;
@@ -816,7 +812,7 @@ a	{
 	list-style-type: none;
 	text-transform: uppercase;
 	font-size: 9px;
-	width: 25%;
+	width: 20%;
 	float: left;
 	position: relative;
 }
