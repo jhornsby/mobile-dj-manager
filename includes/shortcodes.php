@@ -623,7 +623,7 @@ add_shortcode( 'mdjm-login', 'mdjm_shortcode_login' );
  *
  * Display the event builder form.
  * 
- * @since	1.6
+ * @since	1.5
  *
  * @return	string
  */
@@ -650,7 +650,7 @@ function mdjm_shortcode_event_builder( $atts )	{
 	);
 
     mdjm_get_template_part( 'event', 'builder' );
-    $output .= mdjm_do_content_tags( ob_get_contents() );
+    $output = mdjm_do_content_tags( ob_get_contents() );
     ob_get_clean();
 
 
