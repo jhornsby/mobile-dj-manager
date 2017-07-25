@@ -702,7 +702,7 @@ function mdjm_content_tag_application_home()	{
  * @return	str		The customised name of the Client Zone.
  */
 function mdjm_content_tag_application_name()	{
-	return mdjm_get_option( 'app_name', __( 'Client Zone', 'mobile-dj-manager' ) );
+	return mdjm_get_app_name();
 } // mdjm_content_tag_application_name
 
 /**

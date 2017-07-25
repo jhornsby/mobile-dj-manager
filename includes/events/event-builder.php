@@ -12,6 +12,41 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 
 /**
+ * Retrieve the event builder page ID.
+ *
+ * @since   1.5
+ * @return  int|false   Page ID or false if not set
+ */
+function mdjm_get_event_builder_page()  {
+    return mdjm_get_page_id( 'event_builder' );
+} // mdjm_get_event_builder_page
+
+/**
+ * Retrieve labels for event builder form.
+ *
+ * @since   1.5
+ * @param   str         $button   The input to which to retrieve label for. (previous, next, submit etc)
+ * @return  str         Button label string
+ */
+function mdjm_get_event_builder_label( $input = 'submit' )  {
+    return mdjm_get_option( 'event_builder_label_' . $input, ucfirst( $input ) );
+} // mdjm_get_event_builder_label
+
+/**
+ * Whether or not to use offer packages.
+ *
+ * @since   1.5
+ * @return  bool
+ */
+function mdjm_event_builder_offer_packages()  {
+    if ( ! mdjm_packages_enabled() ) {
+        return false;
+    }
+
+    return mdjm_get_option( 'event_builder_packages' );
+} // mdjm_event_builder_offer_packages
+
+/**
  * Default nuimber of steps in form.
  *
  * @since   1.5
@@ -46,7 +81,7 @@ function mdjm_event_builder_total_steps()   {
 
     if ( false === $steps ) {
 
-        if ( mdjm_packages_enabled() )    {
+        if ( mdjm_event_builder_offer_packages() )    {
             $steps = mdjm_event_builder_default_steps();
 
             if ( count( mdjm_get_packages() ) > 0 ) {
@@ -78,3 +113,67 @@ function mdjm_event_builder_is_last_step( $step = null )  {
 
     return false;
 } // mdjm_event_builder_is_last_step
+
+/**
+ * Retrieve posted form data.
+ *
+ * @since   1.5
+ * @param   str         $key   The transient key within which data is stored. Check $_POST if not defined.
+ * @return  arr|false   Array of posted data or false if no data
+ */
+function mdjm_get_event_builder_post_data( $key = '' )  {
+    if ( empty( $key ) )    {
+        if ( isset( $_POST['mdjm_eb_key'] ) )   {
+            $key = $_POST['mdjm_eb_key'];
+        }
+    }
+
+    $post_data = get_transient( $key );
+
+    if ( false === $post_data ) {
+        foreach( mdjm_event_builder_fields() as $field ) {
+            $post_data[ $field ] = '';
+        }
+    }
+
+    return apply_filters( 'mdjm_event_builder_post_data', $post_data, $key );
+} // mdjm_get_event_builder_post_data
+
+/**
+ * Fields used within the event builder.
+ *
+ * @since   1.5
+ * @return  arr   Array of fields
+ */
+function mdjm_event_builder_fields()    {
+    // Array key should be equal to the step within the form
+    $fields = array(
+        'event_date',
+        'client_firstname',
+        'client_lastname',
+        'client_email',
+        'client_tel',
+        'event_start_time',
+        'event_finish_time',
+        'event_finish_date',
+        'event_type'
+    );
+
+    if ( mdjm_event_builder_offer_packages() )  {
+        $fields[] = 'addon';
+    }
+
+    return apply_filters( 'mdjm_event_builder_fields', $fields );
+} // mdjm_event_builder_fields
+
+/**
+ * Form data to ignore.
+ *
+ * @since   1.5
+ * @return  arr   Array of fields to ignore
+ */
+function mdjm_event_builder_ignore_fields() {
+    $fields = array( 'mdjm_eb_key', 'event_date_display', 'step', 'action', 'mdjm_honeypot' );
+
+    return apply_filters( 'mdjm_event_builder_ignore_fields', $fields );
+} // mdjm_event_builder_ignore_fields

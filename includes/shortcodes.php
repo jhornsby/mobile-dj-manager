@@ -46,7 +46,7 @@ function mdjm_shortcode_home( $atts )	{
 		
 		mdjm_add_content_tag(
 			'event_action_buttons',
-			sprintf( __( '%s action buttons within %s', 'mobile-dj-manager' ), mdjm_get_label_singular(), mdjm_get_option( 'app_name' ) ),
+			sprintf( __( '%s action buttons within %s', 'mobile-dj-manager' ), mdjm_get_label_singular(), mdjm_get_app_name() ),
 			'mdjm_do_action_buttons'
 		);
 		
@@ -628,31 +628,43 @@ add_shortcode( 'mdjm-login', 'mdjm_shortcode_login' );
  * @return	string
  */
 function mdjm_shortcode_event_builder( $atts )	{
-	
+
 	ob_start();
 
-    mdjm_insert_datepicker(
-		array(
-			'class'    => '',
-			'id'       => 'event-date-display',
-			'altfield' => 'event-date',
-			'mindate'  => '1'
-		)
-	);
+    if ( ! mdjm_get_event_builder_page() )  {
+        $output  = '<div class="mdjm-alert mdjm-alert-error">';
+        $output .= sprintf(
+            __( 'No %s page is defined within %s settings.', 'mobile-dj-manager' ),
+            mdjm_get_label_singular( true ),
+            mdjm_get_app_name()
+        );
+        $output .= '</div>';
 
-	mdjm_insert_datepicker(
-		array(
-			'class'    => '',
-			'id'       => 'event-finish-date-display',
-			'altfield' => 'event-finish-date',
-			'mindate'  => '1'
-		)
-	);
+    } else  {
 
-    mdjm_get_template_part( 'event', 'builder' );
-    $output = mdjm_do_content_tags( ob_get_contents() );
+        mdjm_insert_datepicker(
+            array(
+                'class'    => '',
+                'id'       => 'event-date-display',
+                'altfield' => 'event-date',
+                'mindate'  => '1'
+            )
+        );
+
+        mdjm_insert_datepicker(
+            array(
+                'class'    => '',
+                'id'       => 'event-finish-date-display',
+                'altfield' => 'event-finish-date',
+                'mindate'  => '1'
+            )
+        );
+
+        mdjm_get_template_part( 'event', 'builder' );
+        $output = mdjm_do_content_tags( ob_get_contents() );
+    }
+
     ob_get_clean();
-
 
     return $output;
 } // mdjm_shortcode_event_builder

@@ -13,6 +13,16 @@ if ( ! defined( 'ABSPATH' ) )
 	exit;
 
 /**
+ * Retrieve the name of the client zone.
+ *
+ * @since   1.5
+ * @return  str     Client Zone application name
+ */
+function mdjm_get_app_name()    {
+    return mdjm_get_option( 'app_name', __( 'Client Zone', 'mobile-dj-manager' ) );
+} // mdjm_get_app_name
+
+/**
  * Print the MDJM footer text.
  *
  * @since	1.3
