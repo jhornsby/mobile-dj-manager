@@ -159,6 +159,43 @@ jQuery(document).ready(function ($) {
 		errorClass: 'mdjm_form_error',
 		validClass: 'mdjm_form_valid',
 	});
+
+    /*=Event Builder
+	---------------------------------------------------- */
+    // Step through
+    $(document).on('click', '#mdjm-event-builder-buttons .next, #mdjm-event-builder-buttons .previous', function(e) {
+        e.preventDefault();
+
+        var $form     = $('#mdjm-event-builder-form');
+		var eventData = $('#mdjm-event-builder-form').serialize();
+        var next_step = $(this).data('step');
+
+        $.ajax({
+			type       : 'POST',
+			dataType   : 'json',
+			data       : eventData,
+			url        : mdjm_vars.ajaxurl,
+            beforeSend: function()	{
+                $('#mdjm-event-builder-buttons .next').val(mdjm_vars.payment_loading);
+            },
+			success    : function (response) {
+				if ( response.error )	{
+					$form.find('.mdjm-alert').show('fast');
+					$form.find('.mdjm-alert').html(response.error);
+					$form.find('#' + response.field).addClass('error');
+					$form.find('#' + response.field).focus();
+				} else	{
+                    $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
+					$form.get(0).submit();
+				}
+			}
+		}).fail(function (data) {
+			if ( window.console && window.console.log ) {
+				console.log( data );
+			}
+		});
+    });
+    
 });
 
 function mdjm_validate_payment_form() {

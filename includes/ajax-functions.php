@@ -970,3 +970,29 @@ function mdjm_do_availability_check_ajax()	{
 } // mdjm_do_availability_check_ajax
 add_action( 'wp_ajax_mdjm_do_availability_check', 'mdjm_do_availability_check_ajax' );
 add_action( 'wp_ajax_nopriv_mdjm_do_availability_check', 'mdjm_do_availability_check_ajax' );
+
+/**
+ * Step through event builder
+ *
+ * @since   1.5
+ * return   void   
+ */
+function mdjm_event_builder_step_ajax() {
+    $post_data = mdjm_get_event_builder_post_data();
+    $fields    = mdjm_event_builder_fields();
+    $ignore    = mdjm_event_builder_ignore_fields();
+
+    foreach( $fields as $field )    {
+        if ( in_array( $field, $ignore ) )   {
+            continue;
+        }
+
+        if ( isset( $_POST[ $field ] ) ) {
+            $post_data[ $field ] = $_POST[ $field ];
+        }
+    }
+
+    set_transient( $_POST['mdjm_eb_key'], $post_data, HOUR_IN_SECONDS );
+} // mdjm_event_builder_step_ajax
+add_action( 'wp_ajax_event_builder_step', 'mdjm_event_builder_step_ajax' );
+add_action( 'wp_ajax_nopriv_event_builder_step', 'mdjm_event_builder_step_ajax' );

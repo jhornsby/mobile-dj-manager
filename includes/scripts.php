@@ -53,7 +53,8 @@ function mdjm_load_scripts()	{
 				'complete_payment'      => mdjm_get_payment_button_text(),
 				'date_format'           => mdjm_format_datepicker_date(),
                 'timepicker_format'     => 'H:i' == get_option( 'time_format' ) ? 'HH:mm' : 'h:mm p',
-                'first_day'             => get_option( 'start_of_week' )
+                'first_day'             => get_option( 'start_of_week' ),
+                'event_builder_page'    => mdjm_get_formatted_url( mdjm_get_event_builder_page() )
 			)
 		)
 	);
