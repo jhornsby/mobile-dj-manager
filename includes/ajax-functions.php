@@ -978,6 +978,19 @@ add_action( 'wp_ajax_nopriv_mdjm_do_availability_check', 'mdjm_do_availability_c
  * return   void   
  */
 function mdjm_event_builder_step_ajax() {
+	$required_fields = mdjm_event_builder_required_fields( $_POST['step'] );
+
+	if ( ! empty( $required_fields ) )	{
+		foreach( $required_fields as $required_field )	{
+			if ( empty( $_POST[ $required_field ] ) )	{
+				wp_send_json_error( array(
+					'field' => $required_field,
+					'error' => __( 'Please complete all required fields', 'mobile-dj-manager' )
+				) );
+			}
+		}
+	}
+
     $post_data = mdjm_get_event_builder_post_data();
     $fields    = mdjm_event_builder_fields();
     $ignore    = mdjm_event_builder_ignore_fields();

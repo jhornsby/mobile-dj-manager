@@ -49,9 +49,11 @@ do_action( 'mdjm_pre_event_builder' ); ?>
 
     <div id="mdjm-event-builder-form-wrap" class="mdjm_clearfix">
 
-        <div class="mdjm-alert mdjm-alert-error mdjm-hidden"></div>
-
         <?php do_action( 'mdjm_event_builder_before_form' ); ?>
+
+        <div class="mdjm_loading_overlay">
+            <div class="mdjm_spin_loader"></div>
+        </div>
 
         <form method="post" id="mdjm-event-builder-form" class="mdjm_form" autocomplete="off">
 
@@ -66,6 +68,8 @@ do_action( 'mdjm_pre_event_builder' ); ?>
 
                 <?php do_action( 'mdjm_event_builder_progress_bar' ); ?>
             </ul>
+
+			<div class="mdjm-alert mdjm-alert-error mdjm-hidden"></div>
 
             <?php do_action( 'mdjm_event_builder_before_fields' ); ?>
 

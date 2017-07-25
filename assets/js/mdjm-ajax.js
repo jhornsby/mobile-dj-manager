@@ -176,14 +176,18 @@ jQuery(document).ready(function ($) {
 			data       : eventData,
 			url        : mdjm_vars.ajaxurl,
             beforeSend: function()	{
-                $('#mdjm-event-builder-buttons .next').val(mdjm_vars.payment_loading);
+				$form.find('.mdjm-alert').hide('fast');
+				$('.mdjm_loading_overlay').show();
+                $('#mdjm-event-builder-buttons').hide();
             },
 			success    : function (response) {
-				if ( response.error )	{
+				if ( response.data && response.data.error )	{
 					$form.find('.mdjm-alert').show('fast');
-					$form.find('.mdjm-alert').html(response.error);
-					$form.find('#' + response.field).addClass('error');
-					$form.find('#' + response.field).focus();
+					$form.find('.mdjm-alert').html(response.data.error);
+					$form.find('#' + response.data.field).addClass('error');
+					$form.find('#' + response.data.field).focus();
+					$('.mdjm_loading_overlay').hide();
+					$('#mdjm-event-builder-buttons').show();
 				} else	{
                     $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
 					$form.get(0).submit();

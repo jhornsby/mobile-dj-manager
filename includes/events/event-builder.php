@@ -167,6 +167,42 @@ function mdjm_event_builder_fields()    {
 } // mdjm_event_builder_fields
 
 /**
+ * Required fields.
+ *
+ * @since   1.5
+ * @param	int		$step	Step
+ * @return  arr		Array of required fields
+ */
+function mdjm_event_builder_required_fields( $step = null ) {
+	if ( ! isset( $step ) )	{
+		if ( isset( $_POST['step'] ) )	{
+			$step = $_POST['step'];
+		} else	{
+			mdjm_event_builder_current_step();
+		}
+	}
+
+	switch ( $step )	{
+		case '1':
+			$fields = array( 'event_date' );
+			break;
+		
+		case '2':
+			$fields = array( 'client_firstname', 'client_lastname', 'client_email' );
+			break;
+
+		case '3':
+			$fields = array( 'event_start_time', 'event_finish_time' );
+			break;
+
+		default:
+			$fields = array();
+	}
+
+    return apply_filters( 'mdjm_event_builder_required_fields', $fields );
+} // mdjm_event_builder_required_fields
+
+/**
  * Form data to ignore.
  *
  * @since   1.5
