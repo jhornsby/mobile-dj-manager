@@ -161,14 +161,27 @@ function mdjm_run_install()	{
 				'comment_status' => 'closed'
 			)
 		);
-		
+
+		// Event Builder Page
+		$event_builder = wp_insert_post(
+			array(
+				'post_title'     => sprintf( __( 'Builder your %s', 'mobile-dj-manager' ), mdjm_get_label_singular() ),
+				'post_content'   => '[mdjm-event-builder]',
+				'post_status'    => 'publish',
+				'post_author'    => 1,
+				'post_type'      => 'page',
+				'comment_status' => 'closed'
+			)
+		);
+
 		// Store the page IDs in MDJM options
-		$options['app_home_page']  = $client_zone;
-		$options['contracts_page'] = $contract;
-		$options['payments_page']  = $payments;
-		$options['playlist_page']  = $playlist;
-		$options['profile_page']   = $profile;
-		$options['quotes_page']    = $quotes;
+		$options['app_home_page']      = $client_zone;
+		$options['contracts_page']     = $contract;
+		$options['payments_page']      = $payments;
+		$options['playlist_page']      = $playlist;
+		$options['profile_page']       = $profile;
+		$options['quotes_page']        = $quotes;
+		$options['event_builder_page'] = $event_builder;
 		
 	}
 	
