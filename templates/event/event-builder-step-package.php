@@ -12,7 +12,7 @@
  */
 if ( $packages_enabled ) :
     $packages = mdjm_get_packages();
-
+	$checked  = empty( $post_data['package'] ) ? ' checked="checked"' : '';
     ?>
     <fieldset>
         <legend><?php echo $event_package_heading; ?></legend>
@@ -21,7 +21,7 @@ if ( $packages_enabled ) :
 
         <p>
             <label for="package-0">
-                <input type="radio" name="package" id="package-0" value="0" /> 
+                <input type="radio" name="package" id="package-0" value="0"<?php echo $checked; ?> /> 
                 <?php echo $no_package_label; ?>
             </label>
         </p>
@@ -30,7 +30,7 @@ if ( $packages_enabled ) :
 
         <p>
             <label for="package-<?php echo $package->ID; ?>">
-                <input type="radio" name="package" id="package-<?php echo $package->ID; ?>" value="<?php echo $package->ID; ?>" /> 
+                <input type="radio" name="package" id="package-<?php echo $package->ID; ?>" value="<?php echo $package->ID; ?>"<?php checked( $post_data['package'], $package->ID ); ?> /> 
                 <?php echo get_the_title( $package->ID ); ?>
                 <?php if ( $package_prices ) : ?>
                     <?php echo ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_package_price( $package->ID ) ) ); ?>

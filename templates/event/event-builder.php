@@ -18,11 +18,12 @@ $package_prices          = mdjm_event_builder_display_package_prices();
 $no_package_label        = apply_filters( 'mdjm_event_builder_no_package_label', __( 'None', 'mobile-dj-manager' ) );
 $step                    = mdjm_event_builder_current_step();
 $post_data               = mdjm_get_event_builder_post_data();
+$template                = apply_filters( 'mdjm_event_builder_template_step', $step );
 
 $client_details_active   = $step > 1 ? ' class="active"' : '';
 $event_details_active    = $step > 2 ? ' class="active"' : '';
 $package_details_active  = $step > 3 ? ' class="active"' : '';
-$addons_details_active   = $step > 4 ? ' class="active"' : '';
+$review_details_active   = mdjm_event_builder_is_last_step() ? ' class="active"' : '';
 
 // Adjust these labels as required
 
@@ -30,13 +31,14 @@ $event_date_progress     = apply_filters( 'mdjm_event_builder_date_progress', sp
 $client_details_progress = apply_filters( 'mdjm_event_builder_client_progress', __( 'About You', 'mobile-dj-manager' ) );
 $event_details_progress  = apply_filters( 'mdjm_event_builder_event_progress', sprintf( __( 'Your %s', 'mobile-dj-manager' ), $singular_label ) );
 $event_package_progress  = apply_filters( 'mdjm_event_builder_package_progress', __( 'Package', 'mobile-dj-manager' ) );
-$event_addons_progress   = apply_filters( 'mdjm_event_builder_addons_progress', __( 'Extras', 'mobile-dj-manager' ) );
+$event_review_progress   = apply_filters( 'mdjm_event_builder_review_progress', __( 'Review', 'mobile-dj-manager' ) );
 
 $event_date_heading      = apply_filters( 'mdjm_event_builder_date_heading', __( 'Select a Date', 'mobile-dj-manager' ) );
 $client_details_heading  = apply_filters( 'mdjm_event_builder_client_heading', __( 'Tell us About You', 'mobile-dj-manager' ) );
 $event_details_heading   = apply_filters( 'mdjm_event_builder_event_heading', sprintf( __( 'Your %s Details', 'mobile-dj-manager' ), $singular_label ) );
 $event_package_heading   = apply_filters( 'mdjm_event_builder_package_heading', __( 'Select a Package', 'mobile-dj-manager' ) );
 $event_addons_heading    = apply_filters( 'mdjm_event_builder_addons_heading', __( 'Add-ons', 'mobile-dj-manager' ) );
+$event_review_heading    = apply_filters( 'mdjm_event_builder_review_heading', sprintf( __( 'Review your %s', 'mobile-dj-manager' ), $singular_label ) );
 
 $prev_button_label       = esc_attr( mdjm_get_event_builder_label( 'previous' ) );
 $next_button_label       = esc_attr( mdjm_get_event_builder_label( 'next' ) );
@@ -69,9 +71,7 @@ do_action( 'mdjm_pre_event_builder' ); ?>
                     <li<?php echo $package_details_active; ?>><?php echo $event_package_progress; ?></li>
                 <?php endif; ?>
 
-                <?php if ( $addons_enabled ) : ?>
-                    <li<?php echo $addons_details_active; ?>><?php echo $event_addons_progress; ?></li>
-                <?php endif; ?>
+                <li<?php echo $review_details_active; ?>><?php echo $event_review_progress; ?></li>
 
                 <?php do_action( 'mdjm_event_builder_progress_bar' ); ?>
             </ul>
@@ -81,7 +81,7 @@ do_action( 'mdjm_pre_event_builder' ); ?>
             <?php do_action( 'mdjm_event_builder_before_fields' ); ?>
 
             <!-- Form templates -->
-            <?php include( mdjm_get_template_part( 'event', "builder-step-$step", false ) ); ?>
+            <?php include( mdjm_get_template_part( 'event', "builder-step-$template", false ) ); ?>
 
             <?php do_action( 'mdjm_event_builder_after_fields' ); ?>
 

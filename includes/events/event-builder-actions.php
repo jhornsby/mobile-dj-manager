@@ -78,3 +78,23 @@ function mdjm_event_builder_submit_review_action( $data ) {
     exit;
 } // mdjm_event_builder_submit_review_action
 add_action( 'mdjm_event_builder_submit', 'mdjm_event_builder_submit_review_action' );
+
+/**
+ * Filter the template name for the event builder.
+ *
+ * @since	1.5
+ * @param	int		$template	The current template name
+ * @return	int|str	The template name
+ */
+function mdjm_event_builder_filter_template_name_action( $template )	{
+	if ( $template <= 3 )	{
+		return $template;
+	}
+
+	if ( 4 == $template && mdjm_event_builder_offer_packages() )	{
+		return 'package';
+	}
+
+	return 'review';
+} // mdjm_event_builder_filter_template_name_action
+add_action( 'mdjm_event_builder_template_step', 'mdjm_event_builder_filter_template_name_action' );
