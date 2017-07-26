@@ -734,8 +734,7 @@ a	{
 	padding: 1.387em;
 	margin: 0 0 21px;
 }
-#mdjm_payments_form_wrap #mdjm_payment_submit,
-#mdjm-event-builder-form-wrap #mdjm-event-builder-submit    {
+#mdjm_payments_form_wrap #mdjm_payment_submit    {
     margin: 10px;
 }
 

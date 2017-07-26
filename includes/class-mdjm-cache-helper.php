@@ -53,7 +53,6 @@ class MDJM_Cache_Helper {
 		if ( false === ( $mdjm_page_uris = get_transient( 'mdjm_cache_excluded_uris' ) ) )	{
 			$mdjm_page_uris = array_filter( array_merge(
                 self::get_page_uris( 'app_home' ),
-                self::get_page_uris( 'event_builder' ),
                 self::get_page_uris( 'contact' ),
                 self::get_page_uris( 'contracts' ),
                 self::get_page_uris( 'payment' ),
@@ -103,7 +102,7 @@ class MDJM_Cache_Helper {
 	 * @return	void
 	 */
 	 public static function delete_page_cache( $old_value, $value )	{
-		if ( ! isset( $old_value['tickets_page'] ) )	{
+		if ( ! isset( $old_value['app_home_page'] ) )	{
 			return;
 		}
 

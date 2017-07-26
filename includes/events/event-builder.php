@@ -112,6 +112,12 @@ function mdjm_event_builder_total_steps()   {
             }
         }
 
+        if ( mdjm_event_builder_offer_addons() )    {
+            if ( count( mdjm_get_addons() ) > 0 ) {
+                $steps++;
+            }
+        }
+
         set_transient( 'mdjm_event_builder_steps', $steps, DAY_IN_SECONDS );
     }
 
@@ -184,6 +190,10 @@ function mdjm_event_builder_fields()    {
 
     if ( mdjm_event_builder_offer_packages() )  {
         $fields[] = 'package';
+    }
+
+    if ( mdjm_event_builder_offer_addons() )    {
+        $fields[] = 'addon';
     }
 
     return apply_filters( 'mdjm_event_builder_fields', $fields );

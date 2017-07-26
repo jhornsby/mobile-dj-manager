@@ -21,7 +21,7 @@
             <span class="mdjm-required-indicator">*</span>
         </label>
         <span class="mdjm-description"><?php _e( 'So we know what to call you', 'mobile-dj-manager' ); ?></span>
-        <input type="text" name="client_firstname" id="client-first-name" />
+        <input type="text" name="client_firstname" id="client-first-name" value="<?php echo $post_data['client_firstname']; ?>" />
     </p>
 
     <p class="mdjm-client-lastname">
@@ -29,7 +29,7 @@
             <span class="mdjm-required-indicator">*</span>
         </label>
         <span class="mdjm-description"><?php _e( 'For our records', 'mobile-dj-manager' ); ?></span>
-        <input type="text" name="client_lastname" id="client-last-name" />
+        <input type="text" name="client_lastname" id="client-last-name" value="<?php echo $post_data['client_lastname']; ?>" />
     </p>
 
     <p class="mdjm-client-email">
@@ -37,7 +37,7 @@
             <span class="mdjm-required-indicator">*</span>
         </label>
         <span class="mdjm-description"><?php _e( 'So we can communicate with you', 'mobile-dj-manager' ); ?></span>
-        <input type="text" name="client_email" id="client-email" />
+        <input type="text" name="client_email" id="client-email" value="<?php echo $post_data['client_email']; ?>" />
     </p>
 
     <p class="mdjm-client-tel">
@@ -45,7 +45,7 @@
             <span class="mdjm-required-indicator">*</span>
         </label>
         <span class="mdjm-description"><?php printf( __( 'In case we need to discuss your %s details', 'mobile-dj-manager' ), strtolower( $singular_label ) ); ?></span>
-        <input type="tel" name="client_tel" id="client-tel" />
+        <input type="tel" name="client_tel" id="client-tel" value="<?php echo $post_data['client_tel']; ?>" />
     </p>
 
     <?php do_action( 'mdjm_event_builder_after_client_fields' ); ?>

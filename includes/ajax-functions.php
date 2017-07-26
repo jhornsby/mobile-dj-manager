@@ -1006,6 +1006,8 @@ function mdjm_event_builder_step_ajax() {
     }
 
     set_transient( $_POST['mdjm_eb_key'], $post_data, HOUR_IN_SECONDS );
+
+    wp_send_json_success();
 } // mdjm_event_builder_step_ajax
 add_action( 'wp_ajax_event_builder_step', 'mdjm_event_builder_step_ajax' );
 add_action( 'wp_ajax_nopriv_event_builder_step', 'mdjm_event_builder_step_ajax' );

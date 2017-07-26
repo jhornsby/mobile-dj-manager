@@ -19,11 +19,18 @@ if ( $packages_enabled ) :
 
         <?php do_action( 'mdjm_event_builder_before_packages_field' ); ?>
 
+        <p>
+            <label for="package-0">
+                <input type="radio" name="package" id="package-0" value="0" /> 
+                <?php echo $no_package_label; ?>
+            </label>
+        </p>
+
         <?php foreach( $packages as $package ) : ?>
 
         <p>
             <label for="package-<?php echo $package->ID; ?>">
-                <input type="checkbox" name="package[]" id="package-<?php echo $package->ID; ?>" /> 
+                <input type="radio" name="package" id="package-<?php echo $package->ID; ?>" value="<?php echo $package->ID; ?>" /> 
                 <?php echo get_the_title( $package->ID ); ?>
                 <?php if ( $package_prices ) : ?>
                     <?php echo ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_package_price( $package->ID ) ) ); ?>
@@ -33,6 +40,5 @@ if ( $packages_enabled ) :
         </p>
 
         <?php endforeach; ?>
-
     </fieldset>
 <?php endif; ?>

@@ -14,7 +14,7 @@ if ( $packages_enabled ) :
     $addons = mdjm_get_addons();
     ?>
     <fieldset>
-        <legend><?php echo $event_package_heading; ?></legend>
+        <legend><?php echo $event_addons_heading; ?></legend>
 
         <?php do_action( 'mdjm_event_builder_before_addons_field' ); ?>
 
@@ -23,7 +23,10 @@ if ( $packages_enabled ) :
         <p>
             <label for="addon-<?php echo $addon->ID; ?>">
                 <input type="checkbox" name="addon[]" id="addon-<?php echo $addon->ID; ?>" /> 
-                <?php echo get_the_title( $addon->ID ) . ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_addon_price( $addon->ID ) ) ); ?>
+                <?php echo get_the_title( $addon->ID ); ?>
+                <?php if ( $package_prices ) : ?>
+                    <?php echo ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_addon_price( $addon->ID ) ) ); ?>
+                <?php endif; ?>
             </label>
             <span class="mdjm-description"><?php echo mdjm_get_addon_excerpt( $addon->ID, 0 ); ?></span>
         </p>

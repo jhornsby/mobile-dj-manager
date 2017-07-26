@@ -640,6 +640,10 @@ function mdjm_shortcode_event_builder( $atts )	{
         );
         $output .= '</div>';
 
+    } elseif ( isset( $_GET['mdjm_eb_step'] ) && $_GET['mdjm_eb_step'] > mdjm_event_builder_total_steps() )    {
+        $output  = '<div class="mdjm-alert mdjm-alert-error">';
+        $output .= __( 'The requested step does not exist.', 'mobile-dj-manager' );
+        $output .= '</div>';
     } else  {
 
         mdjm_insert_datepicker(

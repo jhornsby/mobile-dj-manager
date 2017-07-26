@@ -162,43 +162,57 @@ jQuery(document).ready(function ($) {
 
     /*=Event Builder
 	---------------------------------------------------- */
-    // Step through
-    $(document).on('click', '#mdjm-event-builder-buttons .next, #mdjm-event-builder-buttons .previous', function(e) {
+    $(document).on('click', '#mdjm-event-builder-buttons .action-button', function(e) {
         e.preventDefault();
 
-        var $form     = $('#mdjm-event-builder-form');
-		var eventData = $('#mdjm-event-builder-form').serialize();
-        var next_step = $(this).data('step');
+        var $form        = $('#mdjm-event-builder-form');
+		var eventData    = $('#mdjm-event-builder-form').serialize();
+        var current_step = $('input[name=step]').val();
+        var next_step    = $(this).data('step');
 
-        $.ajax({
-			type       : 'POST',
-			dataType   : 'json',
-			data       : eventData,
-			url        : mdjm_vars.ajaxurl,
-            beforeSend: function()	{
-				$form.find('.mdjm-alert').hide('fast');
-				$('.mdjm_loading_overlay').show();
-                $('#mdjm-event-builder-buttons').hide();
-            },
-			success    : function (response) {
-				if ( response.data && response.data.error )	{
-					$form.find('.mdjm-alert').show('fast');
-					$form.find('.mdjm-alert').html(response.data.error);
-					$form.find('#' + response.data.field).addClass('error');
-					$form.find('#' + response.data.field).focus();
-					$('.mdjm_loading_overlay').hide();
-					$('#mdjm-event-builder-buttons').show();
-				} else	{
-                    
-                    $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
-					$form.get(0).submit();
-				}
-			}
-		}).fail(function (data) {
-			if ( window.console && window.console.log ) {
-				console.log( data );
-			}
-		});
+        if ( next_step < current_step ) {
+
+            $('.mdjm_loading_overlay').show();
+            $('#mdjm-event-builder-buttons').hide();
+            $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
+            $form.get(0).submit();
+
+        } else  {
+
+            $.ajax({
+                type       : 'POST',
+                dataType   : 'json',
+                data       : eventData,
+                url        : mdjm_vars.ajaxurl,
+                beforeSend : function()	{
+                    $form.find('.mdjm-alert').hide('fast');
+                    $('.mdjm_loading_overlay').show();
+                    $('#mdjm-event-builder-buttons').hide();
+                },
+                success    : function (response) {
+                    if ( response.data && response.data.error )	{
+                        $form.find('.mdjm-alert').show('fast');
+                        $form.find('.mdjm-alert').html(response.data.error);
+                        $form.find('#' + response.data.field).addClass('error');
+                        $form.find('#' + response.data.field).focus();
+                        $('.mdjm_loading_overlay').hide();
+                        $('#mdjm-event-builder-buttons').show();
+                    } else	{
+                        if ( 'submit' === next_step )   {
+                            $form.attr('action', mdjm_vars.event_builder_page);
+                            $form.append( '<input type="hidden" name="mdjm_action" value="event_builder_submit" />' );
+                        } else  {
+                            $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
+                        }
+                        $form.get(0).submit();
+                    }
+                }
+            }).fail(function (data) {
+                if ( window.console && window.console.log ) {
+                    console.log( data );
+                }
+            });
+        }
     });
     
 });

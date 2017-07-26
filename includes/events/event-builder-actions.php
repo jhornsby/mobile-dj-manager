@@ -34,8 +34,6 @@ function mdjm_event_builder_output_hidden_fields_action()   {
     );
 
     if ( mdjm_event_builder_is_last_step( $step ) ) {
-        $fields['action']        = 'event_builder_submit';
-        $fields['mdjm_action']   = 'event_builder_submit';
         $fields['mdjm_honeypot'] = '';
 
         wp_nonce_field( 'create_event', 'mdjm_nonce' );
@@ -63,3 +61,20 @@ add_action( 'mdjm_delete_package', 'mdjm_event_builder_refresh_step_cache_action
 add_action( 'mdjm_save_addon', 'mdjm_event_builder_refresh_step_cache_action' );
 add_action( 'mdjm_delete_addon', 'mdjm_event_builder_refresh_step_cache_action' );
 add_action( 'update_option_mdjm_settings', 'mdjm_event_builder_refresh_step_cache_action' );
+
+/**
+ * Submit the event builder form for review
+ *
+ * @since   1.5
+ * @param   arr     $data   Posted form data
+ * @return  void
+ */
+function mdjm_event_builder_submit_review_action( $data ) {
+    mdjm_do_honeypot_check( $data );
+
+    wp_redirect( add_query_arg( array(
+        'event_ref' => $data['mdjm_eb_key']
+    ), mdjm_get_formatted_url( mdjm_get_option( 'event_builder_page' ) ) ) );
+    exit;
+} // mdjm_event_builder_submit_review_action
+add_action( 'mdjm_event_builder_submit', 'mdjm_event_builder_submit_review_action' );
