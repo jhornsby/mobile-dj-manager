@@ -725,8 +725,21 @@ function mdjm_v15_upgrades()	{
 		@set_time_limit( 0 );
 	}
 
+	// Create the event builder page
+	$event_builder = wp_insert_post(
+		array(
+			'post_title'     => sprintf( __( 'Builder your %s', 'mobile-dj-manager' ), mdjm_get_label_singular() ),
+			'post_content'   => '[mdjm-event-builder]',
+			'post_status'    => 'publish',
+			'post_author'    => 1,
+			'post_type'      => 'page',
+			'comment_status' => 'closed'
+		)
+	);
+
     // Add default event builder options
     $options = array(
+		'event_builder_page'           => $event_builder,
         'event_builder_packages'       => '1',
         'event_builder_addons'         => '1',
         'event_builder_display_prices' => '1',
