@@ -12,7 +12,8 @@
  */
 
 $singular_label          = mdjm_get_label_singular();
-$packages_enabled        = mdjm_packages_enabled();
+$packages_enabled        = mdjm_event_builder_offer_packages();
+$package_prices          = mdjm_event_builder_display_package_prices();
 $step                    = mdjm_event_builder_current_step();
 $post_data               = mdjm_get_event_builder_post_data();
 

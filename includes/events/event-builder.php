@@ -47,6 +47,30 @@ function mdjm_event_builder_offer_packages()  {
 } // mdjm_event_builder_offer_packages
 
 /**
+ * Whether or not to use offer addons.
+ *
+ * @since   1.5
+ * @return  bool
+ */
+function mdjm_event_builder_offer_addons()  {
+    if ( ! mdjm_packages_enabled() ) {
+        return false;
+    }
+
+    return mdjm_get_option( 'event_builder_addons' );
+} // mdjm_event_builder_offer_addons
+
+/**
+ * Whether or not to display package/addon prices.
+ *
+ * @since   1.5
+ * @return  bool
+ */
+function mdjm_event_builder_display_package_prices()    {
+    return mdjm_get_option( 'event_builder_display_prices' );
+} // mdjm_event_builder_display_package_prices
+
+/**
  * Default nuimber of steps in form.
  *
  * @since   1.5
@@ -80,16 +104,15 @@ function mdjm_event_builder_total_steps()   {
     $steps = get_transient( 'mdjm_event_builder_steps' );
 
     if ( false === $steps ) {
+        $steps = mdjm_event_builder_default_steps();
 
         if ( mdjm_event_builder_offer_packages() )    {
-            $steps = mdjm_event_builder_default_steps();
-
             if ( count( mdjm_get_packages() ) > 0 ) {
                 $steps++;
             }
-
-            set_transient( 'mdjm_event_builder_steps', $steps, DAY_IN_SECONDS );
         }
+
+        set_transient( 'mdjm_event_builder_steps', $steps, DAY_IN_SECONDS );
     }
 
     return apply_filters( 'mdjm_event_builder_steps', $steps );
@@ -160,7 +183,7 @@ function mdjm_event_builder_fields()    {
     );
 
     if ( mdjm_event_builder_offer_packages() )  {
-        $fields[] = 'addon';
+        $fields[] = 'package';
     }
 
     return apply_filters( 'mdjm_event_builder_fields', $fields );

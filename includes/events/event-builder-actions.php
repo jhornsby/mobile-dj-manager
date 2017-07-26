@@ -21,10 +21,6 @@ function mdjm_event_builder_output_hidden_fields_action()   {
     $step   = mdjm_event_builder_current_step();
     $action = 'event_builder_step';
 
-    if ( mdjm_event_builder_is_last_step( $step ) ) {
-        $action = 'event_builder_submit';
-    }
-
     if ( isset( $_POST['mdjm_eb_key'] ) )  {
         $key = $_POST['mdjm_eb_key'];
     } else  {
@@ -37,6 +33,14 @@ function mdjm_event_builder_output_hidden_fields_action()   {
         'mdjm_eb_key' => $key
     );
 
+    if ( mdjm_event_builder_is_last_step( $step ) ) {
+        $fields['action']        = 'event_builder_submit';
+        $fields['mdjm_action']   = 'event_builder_submit';
+        $fields['mdjm_honeypot'] = '';
+
+        wp_nonce_field( 'create_event', 'mdjm_nonce' );
+    }
+
     $fields = apply_filters( 'mdjm_event_builder_hidden_fields', $fields );
 
     foreach( $fields as $name => $value )    {
@@ -46,7 +50,7 @@ function mdjm_event_builder_output_hidden_fields_action()   {
 add_action( 'mdjm_event_builder_before_buttons', 'mdjm_event_builder_output_hidden_fields_action' );
 
 /**
- * Recreate step cache on package or addon save.
+ * Recreate step cache on package, addon, or settings save.
  *
  * @since   1.5
  * @return  void
@@ -58,3 +62,4 @@ add_action( 'mdjm_save_package', 'mdjm_event_builder_refresh_step_cache_action' 
 add_action( 'mdjm_delete_package', 'mdjm_event_builder_refresh_step_cache_action' );
 add_action( 'mdjm_save_addon', 'mdjm_event_builder_refresh_step_cache_action' );
 add_action( 'mdjm_delete_addon', 'mdjm_event_builder_refresh_step_cache_action' );
+add_action( 'update_option_mdjm_settings', 'mdjm_event_builder_refresh_step_cache_action' );

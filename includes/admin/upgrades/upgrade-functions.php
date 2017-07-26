@@ -35,32 +35,38 @@ function mdjm_do_automatic_upgrades() {
 		}
 	}
 
-	if( version_compare( $mdjm_version, '1.4', '<' ) ) {
+	if ( version_compare( $mdjm_version, '1.4', '<' ) ) {
 
 		mdjm_v14_upgrades();
 
 	}
 
-	if( version_compare( $mdjm_version, '1.4.3', '<' ) ) {
+	if ( version_compare( $mdjm_version, '1.4.3', '<' ) ) {
 
 		mdjm_v143_upgrades();
 
 	}
 
-	if( version_compare( $mdjm_version, '1.4.7', '<' ) ) {
+	if ( version_compare( $mdjm_version, '1.4.7', '<' ) ) {
 
 		mdjm_v147_upgrades();
 
 	}
 
-	if( version_compare( $mdjm_version, MDJM_VERSION_NUM, '<' ) ) {
+    /*if ( version_compare( $mdjm_version, '1.5', '<' ) ) {
+
+		mdjm_v15_upgrades();
+
+	}*/
+
+	if ( version_compare( $mdjm_version, MDJM_VERSION_NUM, '<' ) ) {
 
 		// Let us know that an upgrade has happened
 		$did_upgrade = true;
 
 	}
 
-	if( $did_upgrade ) {
+	if ( $did_upgrade ) {
 
 		// Send to what's new page
 		if ( substr_count( MDJM_VERSION_NUM, '.' ) < 2 )	{
@@ -701,3 +707,36 @@ function mdjm_v147_upgrade_event_tasks()	{
 
 } // mdjm_v147_upgrade_event_tasks
 add_action( 'mdjm-upgrade_event_tasks', 'mdjm_v147_upgrade_event_tasks' );
+
+/**
+ * 1.5 Upgrade.
+ *
+ * @since	1.5
+ * @return	void
+ */
+function mdjm_v15_upgrades()	{
+	if ( ! mdjm_employee_can( 'manage_mdjm' ) ) {
+		wp_die( __( 'You do not have permission to do perform MDJM upgrades', 'mobile-dj-manager' ), __( 'Error', 'mobile-dj-manager' ), array( 'response' => 403 ) );
+	}
+
+	ignore_user_abort( true );
+
+	if ( ! mdjm_is_func_disabled( 'set_time_limit' ) && ! ini_get( 'safe_mode' ) ) {
+		@set_time_limit( 0 );
+	}
+
+    // Add default event builder options
+    $options = array(
+        'event_builder_packages'       => '1',
+        'event_builder_addons'         => '1',
+        'event_builder_display_prices' => '1',
+        'event_builder_label_previous' => __( 'Previous', 'mobile-dj-manager' ),
+        'event_builder_label_next'     => __( 'Next', 'mobile-dj-manager' ),
+        'event_builder_label_submit'   => __( 'Submit', 'mobile-dj-manager' )
+    );
+
+    foreach ( $options as $key => $value )  {
+        mdjm_update_option( $key, $value );
+    }
+
+} // mdjm_v15_upgrades

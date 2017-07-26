@@ -948,10 +948,24 @@ function mdjm_get_registered_settings()	{
 						'desc'        => '',
 						'type'        => 'header'
 					),
-                    'event_builder_packages'       => array(
+                    'event_builder_packages' => array(
 						'id'          => 'event_builder_packages',
 						'name'        => __( 'Offer Packages?', 'mobile-dj-manager' ),
 						'desc'        => __( 'Whether or not to allow clients to select packages', 'mobile-dj-manager' ),
+						'type'        => 'checkbox',
+						'std'         => '1'
+					),
+                    'event_builder_addons'  => array(
+						'id'          => 'event_builder_addons',
+						'name'        => __( 'Offer Addons?', 'mobile-dj-manager' ),
+						'desc'        => __( 'Whether or not to allow clients to select addons', 'mobile-dj-manager' ),
+						'type'        => 'checkbox',
+						'std'         => '1'
+					),
+                    'event_builder_display_prices'  => array(
+						'id'          => 'event_builder_display_prices',
+						'name'        => __( 'Package/Addon Prices?', 'mobile-dj-manager' ),
+						'desc'        => __( 'Whether or not to display prices for packages and addons', 'mobile-dj-manager' ),
 						'type'        => 'checkbox',
 						'std'         => '1'
 					),

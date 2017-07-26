@@ -12,18 +12,22 @@
  */
 if ( $packages_enabled ) :
     $packages = mdjm_get_packages();
+
     ?>
     <fieldset>
         <legend><?php echo $event_package_heading; ?></legend>
 
-        <?php do_action( 'mdjm_event_builder_before_addons_field' ); ?>
+        <?php do_action( 'mdjm_event_builder_before_packages_field' ); ?>
 
         <?php foreach( $packages as $package ) : ?>
 
         <p>
-            <label for="addon-<?php echo $package->ID; ?>">
-                <input type="checkbox" name="addon[]" id="addon-<?php echo $package->ID; ?>" /> 
-                <?php echo get_the_title( $package->ID ) . ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_package_price( $package->ID ) ) ); ?>
+            <label for="package-<?php echo $package->ID; ?>">
+                <input type="checkbox" name="package[]" id="package-<?php echo $package->ID; ?>" /> 
+                <?php echo get_the_title( $package->ID ); ?>
+                <?php if ( $package_prices ) : ?>
+                    <?php echo ' &ndash; ' . mdjm_currency_filter( mdjm_format_amount( mdjm_get_package_price( $package->ID ) ) ); ?>
+                <?php endif; ?>
             </label>
             <span class="mdjm-description"><?php echo mdjm_get_package_excerpt( $package->ID, 0 ); ?></span>
         </p>

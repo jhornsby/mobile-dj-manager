@@ -189,6 +189,7 @@ jQuery(document).ready(function ($) {
 					$('.mdjm_loading_overlay').hide();
 					$('#mdjm-event-builder-buttons').show();
 				} else	{
+                    
                     $form.attr('action', mdjm_vars.event_builder_page + 'mdjm_eb_step=' + next_step);
 					$form.get(0).submit();
 				}
