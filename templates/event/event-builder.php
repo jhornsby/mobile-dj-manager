@@ -30,12 +30,13 @@ $event_date_progress     = apply_filters( 'mdjm_event_builder_date_progress', sp
 $client_details_progress = apply_filters( 'mdjm_event_builder_client_progress', __( 'About You', 'mobile-dj-manager' ) );
 $event_details_progress  = apply_filters( 'mdjm_event_builder_event_progress', sprintf( __( 'Your %s', 'mobile-dj-manager' ), $singular_label ) );
 $event_package_progress  = apply_filters( 'mdjm_event_builder_package_progress', __( 'Package', 'mobile-dj-manager' ) );
+$event_addons_progress   = apply_filters( 'mdjm_event_builder_addons_progress', __( 'Extras', 'mobile-dj-manager' ) );
 
 $event_date_heading      = apply_filters( 'mdjm_event_builder_date_heading', __( 'Select a Date', 'mobile-dj-manager' ) );
 $client_details_heading  = apply_filters( 'mdjm_event_builder_client_heading', __( 'Tell us About You', 'mobile-dj-manager' ) );
 $event_details_heading   = apply_filters( 'mdjm_event_builder_event_heading', sprintf( __( 'Your %s Details', 'mobile-dj-manager' ), $singular_label ) );
 $event_package_heading   = apply_filters( 'mdjm_event_builder_package_heading', __( 'Select a Package', 'mobile-dj-manager' ) );
-$event_addons_heading    = apply_filters( 'mdjm_event_builder_addons_heading', __( 'Extras', 'mobile-dj-manager' ) );
+$event_addons_heading    = apply_filters( 'mdjm_event_builder_addons_heading', __( 'Add-ons', 'mobile-dj-manager' ) );
 
 $prev_button_label       = esc_attr( mdjm_get_event_builder_label( 'previous' ) );
 $next_button_label       = esc_attr( mdjm_get_event_builder_label( 'next' ) );
@@ -66,6 +67,10 @@ do_action( 'mdjm_pre_event_builder' ); ?>
 
                 <?php if ( $packages_enabled ) : ?>
                     <li<?php echo $package_details_active; ?>><?php echo $event_package_progress; ?></li>
+                <?php endif; ?>
+
+                <?php if ( $addons_enabled ) : ?>
+                    <li<?php echo $addons_details_active; ?>><?php echo $event_addons_progress; ?></li>
                 <?php endif; ?>
 
                 <?php do_action( 'mdjm_event_builder_progress_bar' ); ?>
