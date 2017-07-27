@@ -125,8 +125,6 @@ function mdjm_event_builder_delete_expired_transients() {
         ", "_transient_timeout_{$prefix}%%", $expired )
     );
 
-    error_log( var_export( $expired_cache, true ) );
-
     if ( ! empty( $expired_cache) ) {
         foreach( $expired_cache as $transient ) {
             get_transient( $transient );
