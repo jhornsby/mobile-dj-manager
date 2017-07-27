@@ -1,6 +1,6 @@
 <?php
 /**
- * This template is used to display step 3 of the event builder form.
+ * This template is used to display the extras step of the event builder form.
  *
  * @version 		1.0
  * @author			Mike Howard
@@ -8,7 +8,7 @@
  * @shortcodes		Supported
  *
  * Do not customise this file!
- * If you wish to make changes, copy this file to your theme directory /theme/mdjm-templates/event/event-builder-step-3.php
+ * If you wish to make changes, copy this file to your theme directory /theme/mdjm-templates/event/event-builder-step-extras.php
  */
 if ( $packages_enabled ) :
     $addons = mdjm_get_addons();
