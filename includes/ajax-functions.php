@@ -1005,7 +1005,7 @@ function mdjm_event_builder_step_ajax() {
         }
     }
 
-    set_transient( $_POST['mdjm_eb_key'], $post_data, HOUR_IN_SECONDS );
+    set_transient( mdjm_event_builder_cache_prefix() . $_POST['mdjm_eb_key'], $post_data, mdjm_event_builder_cache_period() );
 
     wp_send_json_success();
 } // mdjm_event_builder_step_ajax

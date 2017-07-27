@@ -71,6 +71,27 @@ function mdjm_event_builder_display_package_prices()    {
 } // mdjm_event_builder_display_package_prices
 
 /**
+ * Retrieve the cache prefix.
+ *
+ * @since   1.5
+ * @return  str
+ */
+function mdjm_event_builder_cache_prefix()  {
+    return apply_filters( 'mdjm_event_builder_cache_prefix', 'mdjm_eb_cache_' );
+} // mdjm_event_builder_cache_prefix
+
+/**
+ * How long to keep cache data for.
+ *
+ * @since   1.5
+ *
+ * @return  str     Timestamp representing length of time to keep cache for
+ */
+function mdjm_event_builder_cache_period()  {
+    return apply_filters( 'mdjm_event_builder_cache_period', HOUR_IN_SECONDS );
+} // mdjm_event_builder_cache_period
+
+/**
  * Default nuimber of steps in form.
  *
  * @since   1.5
@@ -157,7 +178,7 @@ function mdjm_get_event_builder_post_data( $key = '' )  {
         }
     }
 
-    $post_data = get_transient( $key );
+    $post_data = get_transient( mdjm_event_builder_cache_prefix() . $key );
 
     if ( false === $post_data ) {
         foreach( mdjm_event_builder_fields() as $field ) {

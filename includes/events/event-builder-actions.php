@@ -98,3 +98,40 @@ function mdjm_event_builder_filter_template_name_action( $template )	{
 	return 'review';
 } // mdjm_event_builder_filter_template_name_action
 add_action( 'mdjm_event_builder_template_step', 'mdjm_event_builder_filter_template_name_action' );
+
+/**
+ * Purge old event builder transient data from the DB
+ *
+ * @since   1.5
+ * @return  void
+ */
+function mdjm_event_builder_delete_expired_transients() {
+    global $wpdb;
+
+    $max_age = apply_filters( 'mdjm_event_builder_transient_max_age', '1 hour' );
+    $expired = strtotime( '-' . $max_age );
+    $prefix  = mdjm_event_builder_cache_prefix();
+
+    if ( $expired > time() || $expired < 1 ) {
+        return false;
+    }
+
+    $expired_cache = $wpdb->get_col(
+        $wpdb->prepare( "
+                SELECT REPLACE(option_name, '_transient_timeout_', '') AS transient_name 
+                FROM {$wpdb->options} 
+                WHERE option_name LIKE %s
+                    AND option_value < %s
+        ", "_transient_timeout_{$prefix}%%", $expired )
+    );
+
+    error_log( var_export( $expired_cache, true ) );
+
+    if ( ! empty( $expired_cache) ) {
+        foreach( $expired_cache as $transient ) {
+            get_transient( $transient );
+        }
+    }
+
+} // mdjm_event_builder_delete_expired_transients
+add_action( 'mdjm_daily_scheduled_events', 'mdjm_event_builder_delete_expired_transients' );
