@@ -1,19 +1,11 @@
 <?php
-/**
- * FPDF Class
- *
- * @package     Mobile DJ Manager
- * @subpackage  FPDF
- * @since       1.3
- *
- * Version: 1.81
- * Date:    2015-12-20
- * Author:  Olivier PLATHEY
- */
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) )
-	exit;
+/*******************************************************************************
+* FPDF                                                                         *
+*                                                                              *
+* Version: 1.81                                                                *
+* Date:    2015-12-20                                                          *
+* Author:  Olivier PLATHEY                                                     *
+*******************************************************************************/
 
 define('FPDF_VERSION','1.81');
 
