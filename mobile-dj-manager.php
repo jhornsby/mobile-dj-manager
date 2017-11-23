@@ -49,6 +49,8 @@ if( ! class_exists( 'Mobile_DJ_Manager' ) ) :
 		public $events;
 		
 		public $html;
+
+		public $PDF;
 				
 		public $permissions;
 		
@@ -91,6 +93,7 @@ if( ! class_exists( 'Mobile_DJ_Manager' ) ) :
 				self::$instance->html           = new MDJM_HTML_Elements();
 				self::$instance->users          = new MDJM_Users();
 				self::$instance->roles          = new MDJM_Roles();
+				self::$instance->PDF            = new MDJM_PDF();
 				self::$instance->permissions    = new MDJM_Permissions();
 				self::$instance->txns           = new MDJM_Transactions();
 				
@@ -224,6 +227,7 @@ if( ! class_exists( 'Mobile_DJ_Manager' ) ) :
 			require_once( MDJM_PLUGIN_DIR . '/includes/events/class-mdjm-events-query.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/class-mdjm-debug.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/admin/transactions/mdjm-transactions.php' );
+			require_once( MDJM_PLUGIN_DIR . '/includes/libraries/PDF/class-mdjm-pdf.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/shortcodes.php' );
 			require_once( MDJM_PLUGIN_DIR . '/includes/plugin-compatibility.php' );
 			

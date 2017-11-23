@@ -773,6 +773,86 @@ function mdjm_get_registered_settings()	{
 						'type'        => 'select',
 						'options'     => mdjm_list_templates( 'email_template' )
 					)
+				),
+				'pdf' => array(
+					'pdf_page_size'   => array(
+						'id'          => 'pdf_page_size',
+						'name'        => __( 'Page Size', 'mdjm-to-pdf' ),
+						'type'        => 'select',
+						'options'     => array(
+							'A1'     => __( 'A1', 'mdjm-to-pdf' ),
+							'A2'     => __( 'A2', 'mdjm-to-pdf' ),
+							'A3'     => __( 'A3', 'mdjm-to-pdf' ),
+							'A4'     => __( 'A4', 'mdjm-to-pdf' ),
+							'A5'     => __( 'A5', 'mdjm-to-pdf' ),
+							'B1'     => __( 'B1', 'mdjm-to-pdf' ),
+							'B2'     => __( 'B2', 'mdjm-to-pdf' ),
+							'B3'     => __( 'B3', 'mdjm-to-pdf' ),
+							'B4'     => __( 'B4', 'mdjm-to-pdf' ),
+							'B5'     => __( 'B5', 'mdjm-to-pdf' ),
+							'Letter' => __( 'Letter', 'mdjm-to-pdf' ),
+							'Legal'	 => __( 'Legal', 'mdjm-to-pdf' )
+						),
+						'std'         => 'A4'
+					),
+					'pdf_page_orientation' => array(
+						'id'          => 'pdf_page_orientation',
+						'name'        => __( 'Page Orientation', 'mdjm-to-pdf' ),
+						'type'        => 'select',
+						'options'     => array(
+							'p' => __( 'Portrait', 'mdjm-to-pdf' ),
+							'l' => __( 'Landscape', 'mdjm-to-pdf' )
+						),
+						'std'         => 'p'
+					),
+					'mdjm_to_pdf_templates_header' => array(
+						'id'          => 'mdjm_to_pdf_templates_header',
+						'name'        => '<strong>' . __( 'Template Overrides', 'mdjm-to-pdf' ) . '</strong>',
+						'desc'        => '',
+						'type'        => 'header'
+					),
+					'pdf_enquiry_template' => array(
+						'id'          => 'pdf_enquiry_template',
+						'name'        => __( 'Quote Template Attachment', 'mdjm-to-pdf' ),
+						'desc'        => __( 'This is the template that will be attached to quotes via <code>email</code> to clients', 'mdjm-to-pdf' ),
+						'type'        => 'select',
+						'options'     => mdjm_list_templates( 'email_template' ),
+						'std'         => mdjm_get_option( 'enquiry' )
+					),
+					'pdf_enquiry_text' => array(
+						'id'          => 'pdf_enquiry_text',
+						'name'        => __( 'Enquiry Text', 'mdjm-to-pdf' ),
+						'desc'        => __( 'Override the default template used when sending quotes via email to clients. Leave this text empty if you do <strong>not</strong> want to override', 'mdjm-to-pdf' ),
+						'type'        => 'rich_editor'
+					),
+					'pdf_contract_template' => array(
+						'id'          => 'pdf_contract_template',
+						'name'        => __( 'Contract Template Attachment', 'mdjm-to-pdf' ),
+						'desc'        => __( 'This is the template that will be attached to contract emails', 'mdjm-to-pdf' ),
+						'type'        => 'select',
+						'options'     => mdjm_list_templates( 'email_template' ),
+						'std'         => mdjm_get_option( 'contract' )
+					),
+					'pdf_contract_text' => array(
+						'id'          => 'pdf_contract_text',
+						'name'        => __( 'Contract Text', 'mdjm-to-pdf' ),
+						'desc'        => __( 'Override the default template used when sending contract notification emails to clients. Leave this text empty if you do <strong>not</strong> want to override', 'mdjm-to-pdf' ),
+						'type'        => 'rich_editor'
+					),
+					'pdf_booking_conf_template' => array(
+						'id'          => 'pdf_booking_conf_template',
+						'name'        => __( 'Booking Confirmation Attachment', 'mdjm-to-pdf' ),
+						'desc'        => __( 'This is the template that will be attached to booking confirmation emails', 'mdjm-to-pdf' ),
+						'type'        => 'select',
+						'options'     => mdjm_list_templates( 'email_template' ),
+						'std'         => mdjm_get_option( 'booking_conf_client' )
+					),
+					'pdf_booking_conf_text' => array(
+						'id'          => 'pdf_booking_conf_text',
+						'name'        => __( 'Booking Confirmation Text', 'mdjm-to-pdf' ),
+						'desc'        => __( 'Override the default template used when sending booking confirmation via email to clients. Leave this text empty if you do <strong>not</strong> want to override', 'mdjm-to-pdf' ),
+						'type'        => 'rich_editor'
+					)
 				)
 			)
 		),
@@ -1438,7 +1518,8 @@ function mdjm_get_registered_settings_sections() {
 		) ),
 		'emails'          => apply_filters( 'mdjm_settings_sections_emails', array(
 			'main'               => __( 'General Email Settings', 'mobile-dj-manager' ),
-			'templates'          => sprintf( __( '%s Templates', 'mobile-dj-manager' ), mdjm_get_label_singular() )
+			'templates'          => sprintf( __( '%s Templates', 'mobile-dj-manager' ), mdjm_get_label_singular() ),
+			'pdf'                => __( 'PDF Settings', 'mobile-dj-manager' )
 		) ),
 		'client_zone'     => apply_filters( 'mdjm_settings_sections_styles', array(
 			'main'               => sprintf( __( '%s Settings', 'mobile-dj-manager' ), mdjm_get_option( 'app_name', __( 'Client Zone Settings', 'mobile-dj-manager' ) ) ),
