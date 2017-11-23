@@ -44,6 +44,8 @@ class MDJM_PDF	{
 			$this->set_meta();
 		}
 
+        $this->fPDF->SetFont('Arial');
+
 	} // init
 
 	/**
@@ -130,6 +132,71 @@ class MDJM_PDF	{
 	} // get_upload_dir
 
 /*------------------------------
+ -- CONTENT
+------------------------------*/
+    /**
+     * Output the content to PDF and deliver as required
+     * All vars should be sent via the URL query string
+     * 
+     * @since   1.5
+     * @param   mixed   $data       The content to be converted. Post ID or string
+     * @param   str     $output     'F'->File, 'I'->Browser, 'D'->Download, S->String
+     * @param   str     $file       The full path to the file or the file name if $output = 'D'
+     * @param   int|obj $event      An event ID or an MDJM_Event object
+     * @return  mixed
+     */
+    function write_content( $data, $output = 'F', $file = '', $event = false )    {
+
+        if ( is_numeric( $data ) )   {
+            $post    = get_post( $data );
+            $content = $post->post_content;
+			$content = apply_filters( 'the_content', $content );
+			$content = str_replace( ']]>', ']]&gt;', $content );
+        }
+
+        if ( is_numeric( $event ) )	{
+            $event     = new MDJM_Event( $event );
+            $event_id  = $event->ID;
+            $client_id = $event->client;
+        } else	{
+            $event_id  = $event;
+            $client_id = '';
+        }
+
+        $event_id  = apply_filters( 'mdjm_pdf_event_id', $event_id, $data, $content );
+        $client_id = apply_filters( 'mdjm_pdf_client_id', $event_id, $data, $content );
+        $content   = mdjm_do_content_tags( $content, $event_id, $client_id );
+        $content   = apply_filters( 'mdjm_pdf_content', $content, $event_id );
+
+        if ( empty( $file ) )   {
+            switch( $output )	{
+                case 'F':
+                default:
+                    add_filter( 'upload_dir', array( $this, 'set_upload_dir' ) );
+                    $upload_dir = wp_upload_dir();
+                    $file = $upload_dir['path'] . '/' . str_replace( ' ', '_', mdjm_get_option( 'company_name' ) ) . '.pdf';
+                    break;
+                case 'I' :
+                    $file = mdjm_get_option( 'company_name' ) . '.pdf';
+                    break;
+                case 'D' :
+                    $file = mdjm_get_option( 'company_name' ) . '.pdf';
+                    break;
+                case 'S' :
+                    $file = '';
+                    break;	
+            }
+        }
+
+        $file = apply_filters( 'mdjm_pdf_output_file', $file, $event_id, $content, $data );
+
+        $this->init();
+        $this->fPDF->AddPage();
+        $this->fPDF->WriteHTML( $content );
+
+    } // write_content
+
+/*------------------------------
  -- COMMUNICATIONS PAGE
 ------------------------------*/
 	/**
@@ -171,24 +238,11 @@ class MDJM_PDF	{
 	public function attach_pdf_to_comms( $files, $data )	{
 
 		if ( ! empty( $data['mdjm_pdf_attach'] ) && ! empty( $data['mdjm_email_event'] ) )	{
-			$this->init();
 
-			add_filter( 'upload_dir', array( $this, 'set_upload_dir' ) );
-
-			$upload_dir = wp_upload_dir();
-			$mdjm_event = new MDJM_Event( $data['mdjm_email_event'] );
-			$template   = get_post( $data['mdjm_pdf_attach'] );
-			$content    = $template->post_content;
-			$content    = apply_filters( 'the_content', $content );
-			$content    = str_replace( ']]>', ']]&gt;', $content );
-			$content    = mdjm_do_content_tags( $content, $mdjm_event->ID, $mdjm_event->client );
-			$file       = $upload_dir['path'] . '/' . str_replace( ' ', '_', mdjm_get_option( 'company_name' ) ) . '_' . mdjm_get_event_contract_id( $_POST['mdjm_email_event'] ) . '-' . date( 'Y-m-d H:i:s' ) . '.pdf';
-
-			$this->fPDF->WriteHTML( $content );
+            $this->write_content( $data['mdjm_pdf_attach'], 'F', $file, $data['mdjm_email_event'] );
 			$this->fPDF->Output( 'F', $file );
 
 			if ( file_exists( $file ) )	{
-				error_log( '333' );
 				$files[] = $file;
 			}
 
