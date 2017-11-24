@@ -441,7 +441,6 @@ add_shortcode( 'mdjm-quote', 'mdjm_shortcode_quote' );
  * available on their chosen event date.
  * 
  * @since	1.3
- *
  * @return	string
  */
 function mdjm_shortcode_availability( $atts )	{
@@ -501,12 +500,9 @@ add_shortcode( 'mdjm-availability', 'mdjm_shortcode_availability' );
 /**
  * Addons List Shortcode.
  * 
- * @param	arr		$atts		Shortcode attributes. See $atts.
- * @param	str|int	$filter_value	The value to which to filter $filter_by. Default false (all).
- * @param	str		$list			List type to display. li for bulleted. Default p.
- * @param	bool	$cost			Whether or not display the price. Default false.
- *
- *
+ * @since	1.3
+ * @param	arr		$atts	Arguments passed with the shortcode
+ * @return	string
  */
 function mdjm_shortcode_addons_list( $atts )	{
 
@@ -650,17 +646,75 @@ add_shortcode( 'mdjm-addons', 'mdjm_shortcode_addons_list' );
  * Displays a login form for the front end of the website.
  * 
  * @since	1.3
- *
  * @return	string
  */
 function mdjm_shortcode_login( $atts )	{
 	
 	extract( shortcode_atts( array(
-			'redirect' => '',
-		), $atts, 'mdjm-login' )
-	);
+        'redirect' => '',
+        ), $atts, 'mdjm-login' )
+    );
 	
 	return mdjm_login_form( $redirect );
 
 } // mdjm_shortcode_home
 add_shortcode( 'mdjm-login', 'mdjm_shortcode_login' );
+
+/**
+ * PDF Export Shortcode.
+ *
+ * Enables printing, emailing of downloaded of a PDF export
+ *
+ * @since	1.5
+ * @param	arr		$atts	Arguments passed with the shortcode
+ * @return	string
+ */
+function mdjm_shortcode_pdf_export( $atts )    {
+    global $post, $current_user;
+
+    if ( ! is_user_logged_in() || ! isset( $_GET['event_id'] ) )    {
+        //return;
+    }
+
+    $atts = shortcode_atts( array( // These are our default values
+        'label'  => __( 'Download as PDF', 'mobile-dj-manager' ),
+        'type'   => 'text', // text or button
+        'class'  => '',
+        'output' => 'download' // download, print, email
+	), $atts, 'mdjm-pdf-export' );
+
+    $client = ! empty( $current_user )     ? $current_user->ID : '';
+	$event  = ! empty( $_GET['event_id'] ) ? $_GET['event_id'] : '';
+    $url    = add_query_arg( array(
+        'mdjm_action' => 'export_pdf',
+        'content'     => $post->ID,
+        'output'      => $atts['output'],
+        'event_id'    => $event,
+        'client_id'   => $client
+    ), $_SERVER['REQUEST_URI'] );
+
+    switch( $atts['type'] )    {
+        case 'text':
+        default:
+            $output = sprintf(
+                '<a href="%s" class="%s" target="_blank">%s</span>',
+                wp_nonce_url( $url, 'pdf-export', 'mdjm_nonce' ),
+                sanitize_html_class( $atts['class'] ),
+                mdjm_do_content_tags( $atts['label'], $event, $client )
+            );
+            break;
+        case 'button':
+            $output = sprintf(
+                '<button type="button" class="%s" onclick="window.location.href=\'%s\'">%s</button>',
+                sanitize_html_class( $atts['class'] ),
+                wp_nonce_url( $url, 'pdf-export', 'mdjm_nonce' ),
+                mdjm_do_content_tags( $atts['label'], $event, $client )
+            );
+            break;
+    }
+
+    $output = apply_filters( 'mdjm_pdf_export_shortcode_output', $output, $atts );
+
+    return $output;
+} // mdjm_shortcode_pdf_export
+add_shortcode( 'mdjm-pdf-export', 'mdjm_shortcode_pdf_export' );

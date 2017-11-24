@@ -24,6 +24,7 @@ class MDJM_PDF	{
 	 * Get things going
 	 */
 	public function __construct()	{
+        add_action( 'mdjm_export_pdf',                      array( $this, 'export_pdf' ) );
 		add_action( 'mdjm_add_comms_fields_before_content', array( $this, 'comms_page_pdf_attachment_input' ) );
 		add_filter( 'mdjm_send_comm_email_attachments',     array( $this, 'attach_pdf_to_comms'             ), 10, 2 );
 	} // __construct
@@ -61,11 +62,12 @@ class MDJM_PDF	{
 		$defaults = array(
 			'title'   => '',
 			'author'  => $company,
-			'creator' => $company,
 			'subject' => ''
 		);
 
 		$meta = wp_parse_args( $meta, $defaults );
+
+        $this->fPDF->SetCreator( MDJM_NAME . ', https://mdjm.co.uk' );
 
 		if ( ! empty( $meta->title ) )	{
 			$this->fPDF->SetTitle( $meta['title'] );
@@ -73,10 +75,6 @@ class MDJM_PDF	{
 
 		if ( ! empty( $meta->author ) )	{
 			$this->fPDF->SetAuthor( $meta['author'] );
-		}
-
-		if ( ! empty( $meta->creator ) )	{
-			$this->fPDF->SetCreator( $meta['creator'] );
 		}
 
 		if ( ! empty( $meta->subject ) )	{
@@ -145,7 +143,7 @@ class MDJM_PDF	{
      * @param   int|obj $event      An event ID or an MDJM_Event object
      * @return  mixed
      */
-    function write_content( $data, $output = 'F', $file = '', $event = false )    {
+    public function write_content( $data, $output = 'F', $file = '', $event = false )    {
 
         if ( is_numeric( $data ) )   {
             $post    = get_post( $data );
@@ -164,7 +162,7 @@ class MDJM_PDF	{
         }
 
         $event_id  = apply_filters( 'mdjm_pdf_event_id', $event_id, $data, $content );
-        $client_id = apply_filters( 'mdjm_pdf_client_id', $event_id, $data, $content );
+        $client_id = apply_filters( 'mdjm_pdf_client_id', $client_id, $data, $content );
         $content   = mdjm_do_content_tags( $content, $event_id, $client_id );
         $content   = apply_filters( 'mdjm_pdf_content', $content, $event_id );
 
@@ -195,6 +193,114 @@ class MDJM_PDF	{
         $this->fPDF->WriteHTML( $content );
 
     } // write_content
+
+/*------------------------------
+ -- FRONT END EXPORTS
+------------------------------*/
+    /**
+	 * Export the front end content to PDF.
+	 *
+	 * @since	1.5
+     * @param   arr     $data   Array of action data
+	 * @return	void
+	 */
+    public function export_data( $data )    {
+        if ( ! isset( $data['mdjm_nonce'] ) || ! wp_verify_nonce( $data['mdjm_nonce'], 'pdf-export' ) )    {
+            return;
+        }
+
+        $action  = 'mdjm_' . sanitize_text_field( $data['output'] ) . '_pdf';
+        $outputs = array(
+            'download' => 'D',
+            'print'    => 'I',
+            'email'    => 'F'
+        );
+
+        $data['output'] = array_key_exists( $data['output'] ) ? $outputs[ $data['output'] ] : '';
+
+        unset( $data['mdjm_nonce'], $data['mdjm_action'] );
+
+        do_action( $action, $data );
+    } // export_data
+
+    /**
+	 * Export and download.
+	 *
+	 * @since	1.5
+     * @param   arr     $data   Array data
+	 * @return	void
+	 */
+    public function export_download( $data )    {
+        $content  = $data['content'];
+        $output   = $data['output'];
+        $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
+        $event_id = $data['event_id'];
+
+        $content  = apply_filters( 'mdjm_pdf_export_download', $content, $data, $file );
+
+        $this->write_content( $content, $output, $file, $event_id );
+        $this->fPDF->Output( $output, $file );
+    } // export_download
+
+    /**
+	 * Export and print.
+	 *
+	 * @since	1.5
+     * @param   arr     $data   Array data
+	 * @return	void
+	 */
+    public function export_print( $data )    {
+        $content  = $data['content'];
+        $output   = $data['output'];
+        $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
+        $event_id = $data['event_id'];
+
+        $content  = apply_filters( 'mdjm_pdf_export_print', $content, $data, $file );
+
+        $this->write_content( $content, $output, $file, $event_id );
+        $this->fPDF->Output( $output, $file );
+    } // export_print
+
+    /**
+	 * Export and email.
+	 *
+	 * @since	1.5
+     * @param   arr     $data   Array data
+	 * @return	void
+	 */
+    public function export_email( $data )    {
+        global $current_user;
+
+        $content  = $data['content'];
+        $output   = $data['output'];
+        $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
+        $event_id = $data['event_id'];
+
+        $content  = apply_filters( 'mdjm_pdf_export_email', $content, $data, $file );
+
+        $this->write_content( $content, $output, $file, $event_id );
+        $this->fPDF->Output( $output, $file );
+
+        if ( file_exists( $file ) ) {
+
+            mdjm_send_email_content( array(
+                'to_email'       => $current_user->user_email,
+                'from_name'      => mdjm_get_option( 'company_name' ),
+                'from_email'     => mdjm_get_option( 'system_email' ),
+                'event_id'       => $event_id,
+                'client_id'      => $current_user->ID,
+                'subject'        => sprintf( __( 'Your file from %s', 'mobile-dj-manager' ), mdjm_get_option( 'company_name' ) ),
+                'attachments'    => array( $file ),
+                'message'        => __( 'Please find attached your requested file.', 'mobile-dj-manager' ),
+                'track'          => true,
+                'copy_to'        => 'disable',
+                'source'         => __( 'PDF Export', 'mobile-dj-manager' )
+            ) );
+
+        } else  {
+            
+        }
+    } // export_email
 
 /*------------------------------
  -- COMMUNICATIONS PAGE
