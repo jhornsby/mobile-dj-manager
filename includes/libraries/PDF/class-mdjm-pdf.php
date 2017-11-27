@@ -24,7 +24,21 @@ class MDJM_PDF	{
 	 * Get things going
 	 */
 	public function __construct()	{
-        add_action( 'mdjm_export_pdf',                      array( $this, 'export_pdf' ) );
+        add_action( 'template_redirect',                    array( $this, 'export_pdf'                      ) );
+		add_action( 'mdjm_download_pdf',                    array( $this, 'export_download'                 ) );
+		add_action( 'mdjm_print_pdf',                       array( $this, 'export_print'                    ) );
+		add_action( 'mdjm_email_pdf',                       array( $this, 'export_email'                    ) );
+		add_filter( 'mdjm_pdf_export_download_content',     array( $this, 'quote_content'                   ), 10, 2 );
+		add_filter( 'mdjm_pdf_export_print_content',        array( $this, 'quote_content'                   ), 10, 2 );
+		add_filter( 'mdjm_pdf_export_email_content',        array( $this, 'quote_content'                   ), 10, 2 );
+		add_filter( 'mdjm_pdf_export_download_content',     array( $this, 'contract_content'                ), 10, 2 );
+		add_filter( 'mdjm_pdf_export_print_content',        array( $this, 'contract_content'                ), 10, 2 );
+		add_filter( 'mdjm_pdf_export_email_content',        array( $this, 'contract_content'                ), 10, 2 );
+
+		add_filter( 'mdjm_enquiry_subject',                 array( $this, 'email_quote_subject'             ) );
+		add_filter( 'mdjm_contract_subject',                array( $this, 'email_contract_subject'          ) );
+		add_filter( 'mdjm_booking_conf_subject',            array( $this, 'email_booking_conf_subject'      ) );
+
 		add_action( 'mdjm_add_comms_fields_before_content', array( $this, 'comms_page_pdf_attachment_input' ) );
 		add_filter( 'mdjm_send_comm_email_attachments',     array( $this, 'attach_pdf_to_comms'             ), 10, 2 );
 	} // __construct
@@ -163,8 +177,8 @@ class MDJM_PDF	{
 
         $event_id  = apply_filters( 'mdjm_pdf_event_id', $event_id, $data, $content );
         $client_id = apply_filters( 'mdjm_pdf_client_id', $client_id, $data, $content );
-        $content   = mdjm_do_content_tags( $content, $event_id, $client_id );
-        $content   = apply_filters( 'mdjm_pdf_content', $content, $event_id );
+        $content   = apply_filters( 'mdjm_pdf_write_content', $content, $data );
+		$content   = mdjm_do_content_tags( $content, $event_id, $client_id );
 
         if ( empty( $file ) )   {
             switch( $output )	{
@@ -201,13 +215,19 @@ class MDJM_PDF	{
 	 * Export the front end content to PDF.
 	 *
 	 * @since	1.5
-     * @param   arr     $data   Array of action data
 	 * @return	void
 	 */
-    public function export_data( $data )    {
-        if ( ! isset( $data['mdjm_nonce'] ) || ! wp_verify_nonce( $data['mdjm_nonce'], 'pdf-export' ) )    {
+    public function export_pdf( $data )    {
+		if ( ! isset( $_GET['mdjm_action'] ) || 'export_pdf' != $_GET['mdjm_action'] )    {
             return;
         }
+
+        if ( ! isset( $_GET['mdjm_nonce'] ) || ! wp_verify_nonce( $_GET['mdjm_nonce'], 'pdf-export' ) )    {
+            return;
+        }
+
+		$data = $_GET;
+		unset( $_GET );
 
         $action  = 'mdjm_' . sanitize_text_field( $data['output'] ) . '_pdf';
         $outputs = array(
@@ -216,12 +236,13 @@ class MDJM_PDF	{
             'email'    => 'F'
         );
 
-        $data['output'] = array_key_exists( $data['output'] ) ? $outputs[ $data['output'] ] : '';
+        $data['output'] = array_key_exists( $data['output'], $outputs ) ? $outputs[ $data['output'] ] : '';
 
         unset( $data['mdjm_nonce'], $data['mdjm_action'] );
 
         do_action( $action, $data );
-    } // export_data
+		exit;
+    } // export_pdf
 
     /**
 	 * Export and download.
@@ -236,7 +257,7 @@ class MDJM_PDF	{
         $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
         $event_id = $data['event_id'];
 
-        $content  = apply_filters( 'mdjm_pdf_export_download', $content, $data, $file );
+        $content  = apply_filters( 'mdjm_pdf_export_download_content', $content, $data, $file );
 
         $this->write_content( $content, $output, $file, $event_id );
         $this->fPDF->Output( $output, $file );
@@ -255,7 +276,7 @@ class MDJM_PDF	{
         $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
         $event_id = $data['event_id'];
 
-        $content  = apply_filters( 'mdjm_pdf_export_print', $content, $data, $file );
+        $content  = apply_filters( 'mdjm_pdf_export_print_content', $content, $data, $file );
 
         $this->write_content( $content, $output, $file, $event_id );
         $this->fPDF->Output( $output, $file );
@@ -276,7 +297,7 @@ class MDJM_PDF	{
         $file     = esc_html(  mdjm_get_option( 'company_name' ) ) . '.pdf';
         $event_id = $data['event_id'];
 
-        $content  = apply_filters( 'mdjm_pdf_export_email', $content, $data, $file );
+        $content  = apply_filters( 'mdjm_pdf_export_email_content', $content, $data, $file );
 
         $this->write_content( $content, $output, $file, $event_id );
         $this->fPDF->Output( $output, $file );
@@ -298,9 +319,269 @@ class MDJM_PDF	{
             ) );
 
         } else  {
-            
+            wp_die( __( 'An error occured', 'mobile-dj-manager' ), __( 'ERROR', 'mobile-dj-manager' ) );
         }
     } // export_email
+
+	/**
+	 * Quote page content.
+	 *
+	 * @since	1.5
+     * @param   int		$content	Post ID
+	 * @param   arr		$data		Data array
+	 * @return	void
+	 */
+	public function quote_content( $post_id, $data )	{
+		if ( $post_id == mdjm_get_option( 'quotes_page' ) )	{
+			$event_id = $data['event_id'];
+			$post_id = mdjm_get_event_quote_id( $event_id );
+		}
+		
+		return $post_id;
+	} // quote_content
+
+	/**
+	 * Contract content.
+	 *
+	 * If the contract is unsigned we append the signature panel.
+	 *
+	 * @since	1.5
+     * @param   int		$content	Post ID
+	 * @param   arr		$data		Data array
+	 * @return	void
+	 */
+	public function contract_content( $post_id, $data )	{
+		if ( $post_id == mdjm_get_option( 'contracts_page' ) )	{
+			$event_id = $data['event_id'];
+			$status   = array( 'mdjm-approved', 'mdjm-completed' );
+			$signed   = get_post_meta( $event_id, '_mdjm_event_signed_contract', true );
+
+			if ( in_array( get_post_status( $event_id ), $status ) && ! empty( $signed ) )	{
+				$post_id = $signed;
+			} else	{
+				$post_id = get_post_meta( $event_id, '_mdjm_event_contract', true );
+				add_filter( 'mdjm_pdf_write_content', array( $this, 'contract_signature_panel' ) );
+			}
+		}
+		
+		return $post_id;
+	} // contract_content
+
+	/**
+	 * Contract signature panel.
+	 *
+	 * If the contract is unsigned we append the signature panel.
+	 *
+	 * @since	1.5
+     * @param   str		$content	The contract content
+	 * @param   arr		$data		Data array
+	 * @return	void
+	 */
+	public function contract_signature_panel( $content )	{
+		$content .= '<hr />';
+		$content .= '<h3>' . strtoupper( __( 'CONTRACT ACCEPTANCE', 'mobile-dj-manager' ) ) . '</h3>';
+		$content .= '<p>' . __( 'By signing this contract I hereby confirm that the person named within the contract is me and that all associated details are correct.', 'mobile-dj-manager' ) . '</p>';
+		$content .= '<p>' .__( 'My signature confirms that I have read, understood and accept the terms of this contract.', 'mobile-dj-manager' ) . '</p>';
+		$content .= '<table style="border: none; border-collapse: collapse; width: 75%; float: left;">';
+		$content .= '<tr>';
+		$content .= '<th style="text-align: left; width: 25%; height: 50px; vertical-align:bottom;">Full Name: </th>';
+		$content .= '<td style="border-bottom: 1px solid #000; text-align: left; vertical-align:bottom;">{client_fullname}</td>';
+		$content .= '</tr>';
+		$content .= '<tr>';
+		$content .= '<th style="text-align: left; height: 50px; vertical-align:bottom;">' . __( 'Signature', 'mobile-dj-manager' ) . ': </th>';
+		$content .= '<td style="border-bottom: 1px solid #000; text-align: left; vertical-align:bottom;">&nbsp;</td>';
+		$content .= '</tr>';
+		$content .= '<tr>';
+		$content .= '<th style="text-align: left; height: 50px; vertical-align:bottom;">' . __( 'Date', 'mobile-dj-manager' ) . ' (' . strtoupper( mdjm_get_option( 'short_date_format' )  ) . '): </th>';
+		$content .= '<td style="text-align: left; vertical-align:bottom;">_________/________/________________</td>';
+		$content .= '</tr>';
+		$content .= '</table>';
+
+		return $content;
+	} // contract_signature_panel
+
+/*------------------------------
+ -- EMAILS
+------------------------------*/
+	/**
+	 * Set the subject for a quote PDF email.
+	 *
+	 * If we're overiding the normal template, add the filter for the content too
+	 *
+	 * @since	1.5
+	 * @param	str		$subject	The email subject
+	 * @return	str		The email subject
+	 */
+	public function email_quote_subject( $subject )	{
+		if ( mdjm_get_option( 'pdf_enquiry_text' ) )	{
+			$subject = get_the_title( mdjm_get_option( 'pdf_enquiry_template' ) );
+			$subject = wp_strip_all_tags( $subject );
+
+			add_filter( 'mdjm_email_content_enquiry', array( $this, 'email_quote_content'     ) );
+			add_filter( 'mdjm_enquiry_attachments',   array( $this, 'email_quote_attachments' ), 10, 2 );
+		}
+
+		return $subject;
+	} // email_quote_subject
+
+	/**
+	 * Set the content for a quote PDF email.
+	 *
+	 * @since	1.5
+	 * @param	str		$content	The email content
+	 * @return	str		The email content
+	 */
+	public function email_quote_content( $content )	{
+		return mdjm_get_option( 'pdf_enquiry_text' );
+	} // email_quote_content
+
+	/**
+	 * Adds the PDF attachment to the quote email.
+	 *
+	 * @since	1.5
+	 * @param	arr		$attachments	The existing attachments.
+	 * @param	obj		$mdjm_event		The MDJM_Event object
+	 * @return	arr		The filtered attachments.
+	 */
+	public function email_quote_attachments( $attachments, $mdjm_event )	{
+		$template = mdjm_get_option( 'pdf_enquiry_template' );
+
+		if ( $template )	{
+			$contract_id = mdjm_get_event_contract_id( $mdjm_event->ID );
+			$company     = str_replace( ' ', '_', esc_html( mdjm_get_option( 'company_name' ) ) );
+			$upload_dir  = get_upload_dir();
+			$file        = $upload_dir['path'] . '/' . $company . '_' . $contract_id . '-' . date( 'Y-m-d His' ) . '.pdf';
+
+			$this->write_content( $template, 'F', $file, $mdjm_event->ID );
+			$this->fPDF->Output( $output, $file );
+
+			if ( file_exists( $file ) ) {
+				$attachments[] = $file;
+			}
+		}
+
+		return $attachments;
+	} // email_quote_attachments
+
+	/**
+	 * Set the subject for a contract PDF email.
+	 *
+	 * If we're overiding the normal template, add the filter for the content too
+	 *
+	 * @since	1.5
+	 * @param	str		$subject	The email subject
+	 * @return	str		The email subject
+	 */
+	public function email_contract_subject( $subject )	{
+		if ( mdjm_get_option( 'pdf_contract_text' ) )	{
+			$subject = get_the_title( mdjm_get_option( 'pdf_contract_text' ) );
+			$subject = wp_strip_all_tags( $subject );
+
+			add_filter( 'mdjm_email_content_contract', array( $this, 'email_contract_content'     ) );
+			add_filter( 'mdjm_contract_attachments',   array( $this, 'email_contract_attachments' ), 10, 2 );
+		}
+
+		return $subject;
+	} // email_contract_subject
+
+	/**
+	 * Set the content for a contract PDF email.
+	 *
+	 * @since	1.5
+	 * @param	str		$content	The email content
+	 * @return	str		The email content
+	 */
+	public function email_contract_content( $content )	{
+		return mdjm_get_option( 'pdf_contract_text' );
+	} // email_contract_content
+
+	/**
+	 * Adds the PDF attachment to the contract email.
+	 *
+	 * @since	1.5
+	 * @param	arr		$attachments	The existing attachments.
+	 * @param	obj		$mdjm_event		The MDJM_Event object
+	 * @return	arr		The filtered attachments.
+	 */
+	public function email_contract_attachments( $attachments, $mdjm_event )	{
+		$template = mdjm_get_option( 'pdf_contract_template' );
+
+		if ( $template )	{
+			$contract_id = mdjm_get_event_contract_id( $mdjm_event->ID );
+			$company     = str_replace( ' ', '_', esc_html( mdjm_get_option( 'company_name' ) ) );
+			$upload_dir  = get_upload_dir();
+			$file        = $upload_dir['path'] . '/' . $company . '_' . $contract_id . '-' . date( 'Y-m-d His' ) . '.pdf';
+
+			$this->write_content( $template, 'F', $file, $mdjm_event->ID );
+			$this->fPDF->Output( $output, $file );
+
+			if ( file_exists( $file ) ) {
+				$attachments[] = $file;
+			}
+		}
+
+		return $attachments;
+	} // email_contract_attachments
+
+	/**
+	 * Set the subject for a booking confirmation PDF email.
+	 *
+	 * If we're overiding the normal template, add the filter for the content too
+	 *
+	 * @since	1.5
+	 * @param	str		$subject	The email subject
+	 * @return	str		The email subject
+	 */
+	public function email_booking_conf_subject( $subject )	{
+		if ( mdjm_get_option( 'pdf_booking_conf_text' ) )	{
+			$subject = get_the_title( mdjm_get_option( 'pdf_enquiry_template' ) );
+			$subject = wp_strip_all_tags( $subject );
+
+			add_filter( 'mdjm_email_content_booking_conf', array( $this, 'email_booking_conf_content'     ) );
+			add_filter( 'mdjm_booking_conf_attachments',   array( $this, 'email_booking_conf_attachments' ), 10, 2 );
+		}
+
+		return $subject;
+	} // email_booking_conf_subject
+
+	/**
+	 * Set the content for a booking confirmation PDF email.
+	 *
+	 * @since	1.5
+	 * @param	str		$content	The email content
+	 * @return	str		The email content
+	 */
+	public function email_booking_conf_content( $content )	{
+		return mdjm_get_option( 'pdf_booking_conf_text' );
+	} // email_booking_conf_content
+
+	/**
+	 * Adds the PDF attachment to the booking confirmation email.
+	 *
+	 * @since	1.5
+	 * @param	arr		$attachments	The existing attachments.
+	 * @param	obj		$mdjm_event		The MDJM_Event object
+	 * @return	arr		The filtered attachments.
+	 */
+	public function email_booking_conf_attachments( $attachments, $mdjm_event )	{
+		$template = mdjm_get_option( 'pdf_booking_conf_template' );
+
+		if ( $template )	{
+			$contract_id = mdjm_get_event_contract_id( $mdjm_event->ID );
+			$company     = str_replace( ' ', '_', esc_html( mdjm_get_option( 'company_name' ) ) );
+			$upload_dir  = get_upload_dir();
+			$file        = $upload_dir['path'] . '/' . $company . '_' . $contract_id . '-' . date( 'Y-m-d His' ) . '.pdf';
+
+			$this->write_content( $template, 'F', $file, $mdjm_event->ID );
+			$this->fPDF->Output( $output, $file );
+
+			if ( file_exists( $file ) ) {
+				$attachments[] = $file;
+			}
+		}
+
+		return $attachments;
+	} // email_booking_conf_attachments
 
 /*------------------------------
  -- COMMUNICATIONS PAGE
@@ -344,6 +625,9 @@ class MDJM_PDF	{
 	public function attach_pdf_to_comms( $files, $data )	{
 
 		if ( ! empty( $data['mdjm_pdf_attach'] ) && ! empty( $data['mdjm_email_event'] ) )	{
+
+			$upload_dir = get_upload_dir();
+			$file       = $upload_dir['path'] . '/' . str_replace( ' ', '_', mdjm_get_option( 'company_name' ) ) . '_' . mdjm_get_event_contract_id( $_POST['mdjm_email_event'] ) . '-' . date( 'Y-m-d His' ) . '.pdf';
 
             $this->write_content( $data['mdjm_pdf_attach'], 'F', $file, $data['mdjm_email_event'] );
 			$this->fPDF->Output( 'F', $file );
